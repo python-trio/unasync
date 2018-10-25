@@ -2,11 +2,6 @@
 
 from ._version import __version__
 
-from setuptools.command.build_py import build_py
-
-import os
-import tokenize as std_tokenize
-from tokenize import NAME, NEWLINE, NL, STRING, ENCODING
 
 ASYNC_TO_SYNC = {
     '__aenter__': '__enter__',
@@ -20,15 +15,19 @@ ASYNC_TO_SYNC = {
 }
 
 
+
+
 def tokenize(f):
     last_end = (1, 0)
     for tok in std_tokenize.tokenize(f.readline):
         if tok.type == ENCODING:
             continue
 
+
         if last_end[0] < tok.start[0]:
             yield ('', STRING, ' \\\n')
             last_end = (tok.start[0], 0)
+
 
         space = ''
         if tok.start > last_end:
@@ -36,9 +35,12 @@ def tokenize(f):
             space = ' ' * (tok.start[1] - last_end[1])
         yield (space, tok.type, tok.string)
 
+
         last_end = tok.end
         if tok.type in [NEWLINE, NL]:
             last_end = (tok.end[0] + 1, 0)
+
+
 
 
 def bleach_tokens(tokens):
@@ -60,8 +62,12 @@ def bleach_tokens(tokens):
             used_space = None
 
 
+
+
 def untokenize(tokens):
     return ''.join(space + tokval for space, tokval in tokens)
+
+
 
 
 def bleach(filepath, fromdir, todir):
@@ -77,11 +83,13 @@ def bleach(filepath, fromdir, todir):
             print(result, file=f, end='')
 
 
+
+
 class bleach_build_py(build_py):
     """Monkeypatches build_py to add bleaching from _async to _sync"""
-
     def run(self):
         self._updated_files = []
+
 
         # Base class code
         if self.py_modules:
@@ -90,12 +98,15 @@ class bleach_build_py(build_py):
             self.build_packages()
             self.build_package_data()
 
+
         for f in self._updated_files:
             if os.sep + '_async' + os.sep in f:
                 bleach(f, '_async', '_sync')
 
+
         # Remaining base class code
         self.byte_compile(self.get_outputs(include_bytecode=0))
+
 
     def build_module(self, module, module_file, package):
         outfile, copied = super().build_module(module, module_file, package)
