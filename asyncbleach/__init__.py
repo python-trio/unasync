@@ -5,10 +5,8 @@ from ._version import __version__
 from setuptools.command.build_py import build_py
 
 import os
-import re
 import tokenize as std_tokenize
 from tokenize import NAME, NEWLINE, NL, STRING, ENCODING
-import codecs
 
 ASYNC_TO_SYNC = {
     '__aenter__': '__enter__',
