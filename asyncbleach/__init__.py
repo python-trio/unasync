@@ -71,6 +71,7 @@ def bleach(filepath, fromdir, todir):
         tokens = tokenize(f)
         tokens = bleach_tokens(tokens)
         result = untokenize(tokens)
+        print(result)
         outfilepath = filepath.replace(fromdir, todir)
         os.makedirs(os.path.dirname(outfilepath), exist_ok=True)
         with open(outfilepath, 'w', encoding=encoding) as f:
