@@ -1,6 +1,8 @@
 import os
 import tempfile
 
+from setuptools import sandbox
+
 import asyncbleach
 
 
@@ -10,7 +12,6 @@ def test_asyncbleach():
         with open(os.path.join(tmpdir1, "source.py"), 'w') as f:
             f.write("async def f(): return await 1 \n")
 
-        print(os.path.join(tmpdir1, "source.py"))
 
         asyncbleach.bleach(
             os.path.join(tmpdir1, "source.py"), fromdir=tmpdir1, todir=tmpdir2
@@ -20,3 +21,9 @@ def test_asyncbleach():
 
             bleached_code = f.read()
             assert bleached_code == "def f(): return 1 \n"
+
+
+
+def test_bleach_build_py():
+    path_to_setup_py = os.path.join(os.path.dirname(os.path.abspath(__file__)), './example_pkg/setup.py')
+    sandbox.run_setup(path_to_setup_py, ['build'])
