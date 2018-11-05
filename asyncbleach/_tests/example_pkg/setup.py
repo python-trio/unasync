@@ -9,7 +9,7 @@ setuptools.setup(
     author_email="author@example.com",
     description="A package used to test asyncbleach",
     url="https://github.com/pypa/sampleproject",
-    packages=setuptools.find_packages(),
-     cmdclass={'build_py': bleach_build_py},
-      package_dir={'': 'src'},
+    packages=['example_pkg', 'example_pkg._async'],
+    cmdclass={'build_py': bleach_build_py},
+    package_dir={'': 'src'},
 )

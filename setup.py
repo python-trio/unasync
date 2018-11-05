@@ -13,6 +13,7 @@ setup(
     author="Ratan Kulshreshtha",
     author_email="ratan.shreshtha@gmail.com",
     license="MIT -or- Apache License 2.0",
+    include_package_data=True,
     packages=find_packages(),
     install_requires=[
         "trio",

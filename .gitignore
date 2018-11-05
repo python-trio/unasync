@@ -1,4 +1,5 @@
 # Add any project-specific files here:
+asyncbleach/_tests/example_pkg/build/
 
 bench/results/
 bench/env/
