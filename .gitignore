@@ -1,15 +1,16 @@
 # Add any project-specific files here:
 
+bench/results/
+bench/env/
+bench/trio/
 
-# Sphinx docs
-docs/build/
-
-# Byte-compiled / optimized / DLL files
+# Byte-compiled / optimized / DLL files / editor temp files
 __pycache__/
 *.py[cod]
 *~
 \#*
 .#*
+*.swp
 
 # C extensions
 *.so
@@ -28,6 +29,7 @@ __pycache__/
 *.egg-info/
 .installed.cfg
 *.egg
+/.pybuild
 
 # Installer logs
 pip-log.txt
@@ -35,10 +37,12 @@ pip-log.txt
 # Unit test / coverage reports
 htmlcov/
 .tox/
+.venv/
 .coverage
 .coverage.*
 .cache
-.pytest_cache
+.pytest_cache/
+.mypy_cache/
 nosetests.xml
 coverage.xml
 
@@ -57,6 +61,8 @@ coverage.xml
 *.log
 *.pot
 
+# Sphinx documentation
+doc/_build/
 
 .vscode
 venv
