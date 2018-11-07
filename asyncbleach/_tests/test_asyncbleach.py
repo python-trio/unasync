@@ -2,36 +2,39 @@ import os
 import shutil
 import tempfile
 
+import pytest
 from setuptools import sandbox
 
 import asyncbleach
 
+TEST_DIR = os.path.dirname(os.path.abspath(__file__))
+ASYNC_DIR = os.path.join(TEST_DIR, "async")
+SYNC_DIR = os.path.join(TEST_DIR, "sync")
+TEST_FILES = sorted([f for f in os.listdir(ASYNC_DIR) if f.endswith(".py")])
 
-def test_asyncbleach():
-    with tempfile.TemporaryDirectory() as tmpdir1, tempfile.TemporaryDirectory(
-    ) as tmpdir2:
-        with open(os.path.join(tmpdir1, "source.py"), 'w') as f:
-            f.write("async def f(): return await 1 \n")
 
+@pytest.mark.parametrize('source_file', TEST_FILES)
+def test_asyncbleach(source_file):
+    with tempfile.TemporaryDirectory() as tmpdir:
         asyncbleach.bleach(
-            os.path.join(tmpdir1, "source.py"), fromdir=tmpdir1, todir=tmpdir2
+            os.path.join(ASYNC_DIR, source_file),
+            fromdir=ASYNC_DIR,
+            todir=tmpdir
         )
 
-        with open(os.path.join(tmpdir2, "source.py")) as f:
-
+        with open(os.path.join(SYNC_DIR, source_file)) as f:
+            truth = f.read()
+        with open(os.path.join(tmpdir, source_file)) as f:
             bleached_code = f.read()
-            assert bleached_code == "def f(): return 1 \n"
+            assert bleached_code == truth
 
 
 def test_bleach_build_py():
     with tempfile.TemporaryDirectory() as tmpdir:
-        source_pkg_dir = os.path.join(
-            os.path.dirname(os.path.abspath(__file__)), 'example_pkg'
-        )
+        source_pkg_dir = os.path.join(TEST_DIR, 'example_pkg')
         pkg_dir = os.path.join(tmpdir, 'example_pkg')
         shutil.copytree(source_pkg_dir, pkg_dir)
 
-        pkg_dir = os.path.join(tmpdir, 'example_pkg')
         path_to_setup_py = os.path.join(pkg_dir, 'setup.py')
         sandbox.run_setup(path_to_setup_py, ['build'])
 
