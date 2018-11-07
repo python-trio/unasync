@@ -15,9 +15,7 @@ setup(
     license="MIT -or- Apache License 2.0",
     include_package_data=True,
     packages=find_packages(),
-    install_requires=[
-        "trio",
-    ],
+    install_requires=[],
     keywords=[
         # COOKIECUTTER-TRIO-TODO: add some keywords
         # "async", "io", "networking", ...
