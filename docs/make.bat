@@ -9,7 +9,7 @@ if "%SPHINXBUILD%" == "" (
 )
 set SOURCEDIR=source
 set BUILDDIR=build
-set SPHINXPROJ=asyncbleach
+set SPHINXPROJ=unasync
 
 if "%1" == "" goto help
 

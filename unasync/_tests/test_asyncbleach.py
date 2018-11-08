@@ -5,7 +5,7 @@ import tempfile
 import pytest
 from setuptools import sandbox
 
-import asyncbleach
+import unasync
 
 TEST_DIR = os.path.dirname(os.path.abspath(__file__))
 ASYNC_DIR = os.path.join(TEST_DIR, "async")
@@ -14,9 +14,9 @@ TEST_FILES = sorted([f for f in os.listdir(ASYNC_DIR) if f.endswith(".py")])
 
 
 @pytest.mark.parametrize('source_file', TEST_FILES)
-def test_asyncbleach(source_file):
+def test_unasync(source_file):
     with tempfile.TemporaryDirectory() as tmpdir:
-        asyncbleach.bleach(
+        unasync.bleach(
             os.path.join(ASYNC_DIR, source_file),
             fromdir=ASYNC_DIR,
             todir=tmpdir

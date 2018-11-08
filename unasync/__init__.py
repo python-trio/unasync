@@ -1,4 +1,4 @@
-"""Top-level package for asyncbleach."""
+"""Top-level package for unasync."""
 
 from ._version import __version__
 

@@ -4,9 +4,9 @@
    contain the root `toctree` directive.
 
 
-===========================================
-asyncbleach: The async transformation code.
-===========================================
+=======================================
+unasync: The async transformation code.
+=======================================
 
 .. toctree::
    :maxdepth: 2
