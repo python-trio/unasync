@@ -5,7 +5,7 @@
 
 
 ===========================================
-asyncbleach: The async transformation code.
+unasync: The async transformation code.
 ===========================================
 
 .. toctree::

@@ -47,23 +47,23 @@ To run tests
 * Install requirements: ``pip install -r test-requirements.txt``
   (possibly in a virtualenv)
 
-* Actually run the tests: ``pytest asyncbleach``
+* Actually run the tests: ``pytest unasync``
 
 
 To run yapf
 -----------
 
 * Show what changes yapf wants to make: ``yapf -rpd setup.py
-  asyncbleach``
+  unasync``
 
 * Apply all changes directly to the source tree: ``yapf -rpi setup.py
-  asyncbleach``
+  unasync``
 
 
 To make a release
 -----------------
 
-* Update the version in ``asyncbleach/_version.py``
+* Update the version in ``unasync/_version.py``
 
 * Run ``towncrier`` to collect your release notes.
 

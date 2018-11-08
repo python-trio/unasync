@@ -1,11 +1,11 @@
 from setuptools import setup, find_packages
 
-exec(open("asyncbleach/_version.py", encoding="utf-8").read())
+exec(open("unasync/_version.py", encoding="utf-8").read())
 
 LONG_DESC = open("README.rst", encoding="utf-8").read()
 
 setup(
-    name="asyncbleach",
+    name="unasync",
     version=__version__,
     description="The async transformation code.",
     url="Project URL (for setup.py metadata)",

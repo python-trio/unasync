@@ -1,6 +1,6 @@
 Release history
 ===============
 
-.. currentmodule:: asyncbleach
+.. currentmodule:: unasync
 
 .. towncrier release notes start

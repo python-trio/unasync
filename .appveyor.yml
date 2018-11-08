@@ -23,6 +23,6 @@ test_script:
   - "mkdir empty"
   - "cd empty"
   # Make sure it's being imported from where we expect
-  - "python -c \"import os, asyncbleach; print(os.path.dirname(asyncbleach.__file__))\""
-  - "python -u -m pytest -W error -ra -v -s --pyargs asyncbleach --cov=asyncbleach --cov-config=../.coveragerc"
+  - "python -c \"import os, unasync; print(os.path.dirname(unasync.__file__))\""
+  - "python -u -m pytest -W error -ra -v -s --pyargs unasync --cov=unasync --cov-config=../.coveragerc"
   - "codecov"

@@ -1,7 +1,7 @@
-asyncbleach
+unasync
 ===========
 
-Welcome to `asyncbleach <Project URL (for setup.py metadata)>`__!
+Welcome to `unasync <Project URL (for setup.py metadata)>`__!
 
 The async transformation code.
 

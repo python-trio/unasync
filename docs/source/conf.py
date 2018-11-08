@@ -67,17 +67,17 @@ source_suffix = '.rst'
 master_doc = 'index'
 
 # General information about the project.
-project = 'asyncbleach'
-copyright = 'The asyncbleach authors'
-author = 'The asyncbleach authors'
+project = 'unasync'
+copyright = 'The unasync authors'
+author = 'The unasync authors'
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
 # built documents.
 #
 # The short X.Y version.
-import asyncbleach
-version = asyncbleach.__version__
+import unasync
+version = unasync.__version__
 # The full version, including alpha/beta/rc tags.
 release = version
 
@@ -140,7 +140,7 @@ html_static_path = ['_static']
 # -- Options for HTMLHelp output ------------------------------------------
 
 # Output file base name for HTML help builder.
-htmlhelp_basename = 'asyncbleachdoc'
+htmlhelp_basename = 'unasyncdoc'
 
 
 # -- Options for LaTeX output ---------------------------------------------
@@ -167,7 +167,7 @@ latex_elements = {
 # (source start file, target name, title,
 #  author, documentclass [howto, manual, or own class]).
 latex_documents = [
-    (master_doc, 'asyncbleach.tex', 'Trio Documentation',
+    (master_doc, 'unasync.tex', 'Trio Documentation',
      author, 'manual'),
 ]
 
@@ -177,7 +177,7 @@ latex_documents = [
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
 man_pages = [
-    (master_doc, 'asyncbleach', 'asyncbleach Documentation',
+    (master_doc, 'unasync', 'unasync Documentation',
      [author], 1)
 ]
 
@@ -188,7 +188,7 @@ man_pages = [
 # (source start file, target name, title, author,
 #  dir menu entry, description, category)
 texinfo_documents = [
-    (master_doc, 'asyncbleach', 'asyncbleach Documentation',
-     author, 'asyncbleach', 'The async transformation code.',
+    (master_doc, 'unasync', 'unasync Documentation',
+     author, 'unasync', 'The async transformation code.',
      'Miscellaneous'),
 ]
