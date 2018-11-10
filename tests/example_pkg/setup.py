@@ -1,6 +1,6 @@
 import setuptools
 
-from unasync import bleach_build_py
+from src.unasync import bleach_build_py
 
 setuptools.setup(
     name="example_pkg",

@@ -1,7 +1,23 @@
-include README.rst CHEATSHEET.rst LICENSE* CODE_OF_CONDUCT* CONTRIBUTING*
-include .coveragerc .style.yapf
-include test-requirements.txt
-recursive-include docs *
-recursive-include src *
-recursive-include tests *
+graft docs
+graft src
+graft ci
+graft tests
 prune docs/build
+
+include .style.yapf
+include .coveragerc
+include .cookiecutterrc
+include .editorconfig
+
+include AUTHORS.rst
+include CHANGELOG.rst
+include CHEATSHEET.rst
+include CODE_OF_CONDUCT.rst
+include CONTRIBUTING.rst
+include LICENSE
+include README.rst
+
+include test-requirements.txt
+include tox.ini .travis.yml .appveyor.yml
+
+global-exclude *.py[cod] __pycache__ *.so *.dylib
