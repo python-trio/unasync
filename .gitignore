@@ -1,5 +1,5 @@
 # Add any project-specific files here:
-unasync/_tests/example_pkg/build/
+tests/example_pkg/build/
 
 bench/results/
 bench/env/
