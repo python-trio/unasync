@@ -1,6 +1,6 @@
 import setuptools
 
-from unasync import bleach_build_py
+from unasync import build_py
 
 setuptools.setup(
     name="example_pkg",
@@ -10,6 +10,6 @@ setuptools.setup(
     description="A package used to test unasync",
     url="https://github.com/pypa/sampleproject",
     packages=['example_pkg', 'example_pkg._async'],
-    cmdclass={'build_py': bleach_build_py},
+    cmdclass={'build_py': build_py},
     package_dir={'': 'src'},
 )
