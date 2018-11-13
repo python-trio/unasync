@@ -14,7 +14,7 @@ ASYNC_TO_SYNC = {
     '__aiter__': '__iter__',
     '__anext__': '__next__',
     # TODO StopIteration is still accepted in Python 2, but the right change
-    # is 'raise StopAsyncIteration' -> 'return' since we want to use bleached
+    # is 'raise StopAsyncIteration' -> 'return' since we want to use unasynced
     # code in Python 3.7+
     'StopAsyncIteration': 'StopIteration',
 }
@@ -41,7 +41,7 @@ def tokenize(f):
             last_end = (tok.end[0] + 1, 0)
 
 
-def bleach_tokens(tokens):
+def unasync_tokens(tokens):
     # TODO __await__, ...?
     used_space = None
     for space, toknum, tokval in tokens:
@@ -64,12 +64,12 @@ def untokenize(tokens):
     return ''.join(space + tokval for space, tokval in tokens)
 
 
-def bleach(filepath, fromdir, todir):
+def unasync_file(filepath, fromdir, todir):
     with open(filepath, 'rb') as f:
         encoding, _ = std_tokenize.detect_encoding(f.readline)
         f.seek(0)
         tokens = tokenize(f)
-        tokens = bleach_tokens(tokens)
+        tokens = unasync_tokens(tokens)
         result = untokenize(tokens)
         outfilepath = filepath.replace(fromdir, todir)
         os.makedirs(os.path.dirname(outfilepath), exist_ok=True)
@@ -77,8 +77,11 @@ def bleach(filepath, fromdir, todir):
             print(result, file=f, end='')
 
 
-class bleach_build_py(build_py):
-    """Monkeypatches build_py to add bleaching from _async to _sync"""
+class build_py(build_py):
+    """
+    Convert files in _async dir from being asynchronous to synchronous
+    and saves them in _sync dir.
+    """
 
     def run(self):
         self._updated_files = []
@@ -92,7 +95,7 @@ class bleach_build_py(build_py):
 
         for f in self._updated_files:
             if os.sep + '_async' + os.sep in f:
-                bleach(f, '_async', '_sync')
+                unasync_file(f, '_async', '_sync')
 
         # Remaining base class code
         self.byte_compile(self.get_outputs(include_bytecode=0))
