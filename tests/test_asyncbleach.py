@@ -1,9 +1,10 @@
+import copy
 import os
 import shutil
+import subprocess
 import tempfile
 
 import pytest
-from setuptools import sandbox
 
 import unasync
 
@@ -35,8 +36,9 @@ def test_bleach_build_py():
         pkg_dir = os.path.join(tmpdir, 'example_pkg')
         shutil.copytree(source_pkg_dir, pkg_dir)
 
-        path_to_setup_py = os.path.join(pkg_dir, 'setup.py')
-        sandbox.run_setup(path_to_setup_py, ['build'])
+        env = copy.copy(os.environ)
+        env["PYTHONPATH"] = os.path.realpath(os.path.join(TEST_DIR, ".."))
+        subprocess.check_call(["python", "setup.py", "build"], cwd=pkg_dir, env=env)
 
         bleached = os.path.join(
             pkg_dir, 'build/lib/example_pkg/_sync/__init__.py'
