@@ -93,7 +93,7 @@ else
     mkdir empty
     cd empty
 
-    pytest -W error -ra -v --pyargs unasync --cov=unasync --cov-config=../.coveragerc --verbose
+    pytest -W error -ra -v --cov=unasync --cov-config=../.coveragerc --verbose ../tests
 
     bash <(curl -s https://codecov.io/bash)
 fi
