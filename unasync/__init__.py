@@ -64,7 +64,7 @@ def untokenize(tokens):
     return ''.join(space + tokval for space, tokval in tokens)
 
 
-def unasync(filepath, fromdir, todir):
+def unasync_file(filepath, fromdir, todir):
     with open(filepath, 'rb') as f:
         encoding, _ = std_tokenize.detect_encoding(f.readline)
         f.seek(0)
@@ -78,7 +78,10 @@ def unasync(filepath, fromdir, todir):
 
 
 class build_py(build_py):
-    """Monkeypatches build_py to add unasyncing from _async to _sync"""
+    """
+    Convert files in _async dir from being asynchronous to synchronous
+    and saves them in _sync dir.
+    """
 
     def run(self):
         self._updated_files = []
@@ -92,7 +95,7 @@ class build_py(build_py):
 
         for f in self._updated_files:
             if os.sep + '_async' + os.sep in f:
-                unasync(f, '_async', '_sync')
+                unasync_file(f, '_async', '_sync')
 
         # Remaining base class code
         self.byte_compile(self.get_outputs(include_bytecode=0))

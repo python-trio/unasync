@@ -17,7 +17,7 @@ TEST_FILES = sorted([f for f in os.listdir(ASYNC_DIR) if f.endswith(".py")])
 @pytest.mark.parametrize('source_file', TEST_FILES)
 def test_unasync(source_file):
     with tempfile.TemporaryDirectory() as tmpdir:
-        unasync.unasync(
+        unasync.unasync_file(
             os.path.join(ASYNC_DIR, source_file),
             fromdir=ASYNC_DIR,
             todir=tmpdir
