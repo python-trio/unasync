@@ -8,7 +8,7 @@ setup(
     name="unasync",
     version=__version__,
     description="The async transformation code.",
-    url="Project URL (for setup.py metadata)",
+    url="https://github.com/RatanShreshtha/unasync",
     long_description=LONG_DESC,
     author="Ratan Kulshreshtha",
     author_email="ratan.shreshtha@gmail.com",
