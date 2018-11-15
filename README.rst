@@ -13,7 +13,7 @@ unasync
 
 .. |codecov| image:: https://codecov.io/gh/RatanShreshtha/unasync/branch/master/graph/badge.svg
     :alt: Coverage Status
-    :target:   :target: https://codecov.io/gh/RatanShreshtha/unasync
+    :target: https://codecov.io/gh/RatanShreshtha/unasync
 
 Welcome to `unasync <Project URL (for setup.py metadata)>`__!
 
