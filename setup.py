@@ -17,7 +17,7 @@ setup(
     packages=find_packages('src'),
     package_dir={'': 'src'},
     install_requires=[],
-    keywords=['unasync'],
+    keywords=['async'],
     python_requires=">=3.6",
     classifiers=[
         "License :: OSI Approved :: MIT License",
