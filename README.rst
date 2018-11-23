@@ -23,6 +23,8 @@ unasync
 
 Welcome to `unasync <https://pypi.org/project/unasync/>`_, a project that can transform your asynchronous code into synchronous code.
 
+*Why are we doing it?* - `urllib3/urllib3#1335 https://github.com/urllib3/urllib3/pull/1335/>`_
+
 Installation
 ============
 
@@ -33,7 +35,7 @@ Installation
 Usage
 =====
 
-To use the unasync project you need to install the package and then create a **_async** where you will place the asynchronous code you want to transform into synchronous code.
+To use the unasync project you need to install the package and then create a **_async** folder where you will place the asynchronous code that you want to transform into synchronous code.
 
 And then in your :code:`setup.py` place the following code.
 
@@ -52,3 +54,5 @@ Documentation
 =============
 
 https://unasync.readthedocs.io/en/latest/
+
+License: Your choice of MIT or Apache License 2.0
