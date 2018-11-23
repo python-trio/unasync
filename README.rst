@@ -23,7 +23,7 @@ unasync
 
 Welcome to `unasync <https://pypi.org/project/unasync/>`_, a project that can transform your asynchronous code into synchronous code.
 
-*Why are we doing it?* - `urllib3/urllib3#1335 https://github.com/urllib3/urllib3/pull/1335/>`_
+*Why are we doing it?* - `urllib3/urllib3#1335 <https://github.com/urllib3/urllib3/pull/1335/>`_
 
 Installation
 ============
