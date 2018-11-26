@@ -10,6 +10,7 @@ setup(
     description="The async transformation code.",
     url="https://github.com/RatanShreshtha/unasync",
     long_description=LONG_DESC,
+    long_description_content_type='text/x-rst',
     author="Ratan Kulshreshtha",
     author_email="ratan.shreshtha@gmail.com",
     license="MIT -or- Apache License 2.0",
