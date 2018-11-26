@@ -18,7 +18,7 @@ setup(
     package_dir={'': 'src'},
     install_requires=[],
     keywords=['async'],
-    python_requires=">=3.6",
+    python_requires=">=3.5",
     classifiers=[
         "License :: OSI Approved :: MIT License",
         "License :: OSI Approved :: Apache Software License",
