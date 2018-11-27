@@ -39,6 +39,7 @@ To use the unasync project you need to install the package and then create a **_
 And then in your :code:`setup.py` place the following code.
 
 .. code-block:: python
+
     import unasync
 
     setuptools.setup(
