@@ -3,13 +3,13 @@ unasync
 
 |documentation| |travis| |appveyor| |codecov|
 
-.. |travis| image:: https://travis-ci.com/RatanShreshtha/unasync.svg?branch=master
+.. |travis| image:: .. image:: https://travis-ci.com/python-trio/unasync.svg?branch=master
     :alt: Travis Build Status
-    :target: https://travis-ci.com/RatanShreshtha/unasync
+    :target: https://travis-ci.com/python-trio/unasync
 
-.. |appveyor| image:: https://ci.appveyor.com/api/projects/status/sjw2q42mx7jvqbyp/branch/master?svg=true
+.. |appveyor| image:: https://ci.appveyor.com/api/projects/status/ovhaitunqmdd6n44/branch/master?svg=true
     :alt: AppVeyor Build Status
-    :target: https://ci.appveyor.com/project/RatanShreshtha/unasync
+    :target: https://ci.appveyor.com/project/njsmith/unasync
 
 .. |codecov| image:: https://codecov.io/gh/RatanShreshtha/unasync/branch/master/graph/badge.svg
     :alt: Coverage Status
