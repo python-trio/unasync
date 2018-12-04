@@ -3,7 +3,7 @@ unasync
 
 |documentation| |travis| |appveyor| |codecov|
 
-.. |travis| image:: .. image:: https://travis-ci.com/python-trio/unasync.svg?branch=master
+.. |travis| image:: https://travis-ci.com/python-trio/unasync.svg?branch=master
     :alt: Travis Build Status
     :target: https://travis-ci.com/python-trio/unasync
 
