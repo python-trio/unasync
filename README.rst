@@ -7,9 +7,9 @@ unasync
     :alt: Travis Build Status
     :target: https://travis-ci.com/python-trio/unasync
 
-.. |appveyor| image:: https://ci.appveyor.com/api/projects/status/23gwou9lj6057918/branch/master?svg=true
+.. |appveyor| image:: https://ci.appveyor.com/api/projects/status/ovhaitunqmdd6n44/branch/master?svg=true
     :alt: AppVeyor Build Status
-    :target: https://ci.appveyor.com/project/RatanShreshtha/unasync
+    :target: https://ci.appveyor.com/project/njsmith/unasync
 
 .. |codecov| image:: https://codecov.io/gh/RatanShreshtha/unasync/branch/master/graph/badge.svg
     :alt: Coverage Status
