@@ -2,8 +2,6 @@
 
 set -ex
 
-YAPF_VERSION=0.22.0
-
 if [ "$TRAVIS_OS_NAME" = "osx" ]; then
     curl -Lo macpython.pkg https://www.python.org/ftp/python/${MACPYTHON}/python-${MACPYTHON}-macosx10.6.pkg
     sudo installer -pkg macpython.pkg -target /
@@ -56,16 +54,16 @@ fi
 pip install -U pip setuptools wheel
 
 if [ "$CHECK_FORMATTING" = "1" ]; then
-    pip install yapf==${YAPF_VERSION}
-    if ! yapf -rpd setup.py src tests; then
+    pip install black
+    if ! black --diff setup.py src tests; then
         cat <<EOF
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 Formatting problems were found (listed above). To fix them, run
 
-   pip install yapf==${YAPF_VERSION}
-   yapf -rpi setup.py src tests
+   pip install black
+   black setup.py src tests
 
 in your local checkout.
 

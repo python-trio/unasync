@@ -9,14 +9,14 @@ import tokenize as std_tokenize
 from tokenize import NAME, NEWLINE, NL, STRING, ENCODING
 
 ASYNC_TO_SYNC = {
-    '__aenter__': '__enter__',
-    '__aexit__': '__exit__',
-    '__aiter__': '__iter__',
-    '__anext__': '__next__',
+    "__aenter__": "__enter__",
+    "__aexit__": "__exit__",
+    "__aiter__": "__iter__",
+    "__anext__": "__next__",
     # TODO StopIteration is still accepted in Python 2, but the right change
     # is 'raise StopAsyncIteration' -> 'return' since we want to use unasynced
     # code in Python 3.7+
-    'StopAsyncIteration': 'StopIteration',
+    "StopAsyncIteration": "StopIteration",
 }
 
 
@@ -27,13 +27,13 @@ def tokenize(f):
             continue
 
         if last_end[0] < tok.start[0]:
-            yield ('', STRING, ' \\\n')
+            yield ("", STRING, " \\\n")
             last_end = (tok.start[0], 0)
 
-        space = ''
+        space = ""
         if tok.start > last_end:
             assert tok.start[0] == last_end[0]
-            space = ' ' * (tok.start[1] - last_end[1])
+            space = " " * (tok.start[1] - last_end[1])
         yield (space, tok.type, tok.string)
 
         last_end = tok.end
@@ -61,11 +61,11 @@ def unasync_tokens(tokens):
 
 
 def untokenize(tokens):
-    return ''.join(space + tokval for space, tokval in tokens)
+    return "".join(space + tokval for space, tokval in tokens)
 
 
 def unasync_file(filepath, fromdir, todir):
-    with open(filepath, 'rb') as f:
+    with open(filepath, "rb") as f:
         encoding, _ = std_tokenize.detect_encoding(f.readline)
         f.seek(0)
         tokens = tokenize(f)
@@ -73,8 +73,8 @@ def unasync_file(filepath, fromdir, todir):
         result = untokenize(tokens)
         outfilepath = filepath.replace(fromdir, todir)
         os.makedirs(os.path.dirname(outfilepath), exist_ok=True)
-        with open(outfilepath, 'w', encoding=encoding) as f:
-            print(result, file=f, end='')
+        with open(outfilepath, "w", encoding=encoding) as f:
+            print(result, file=f, end="")
 
 
 class build_py(build_py):
@@ -94,8 +94,8 @@ class build_py(build_py):
             self.build_package_data()
 
         for f in self._updated_files:
-            if os.sep + '_async' + os.sep in f:
-                unasync_file(f, '_async', '_sync')
+            if os.sep + "_async" + os.sep in f:
+                unasync_file(f, "_async", "_sync")
 
         # Remaining base class code
         self.byte_compile(self.get_outputs(include_bytecode=0))
