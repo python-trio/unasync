@@ -8,6 +8,11 @@
 unasync: The async transformation code.
 =======================================
 
+The unasync project's goal is to produce a `permissively licensed
+<https://github.com/python-trio/unasync/blob/master/LICENSE>`__, tool that gives you the ability to transform your
+asynchronous code into synchronous code.
+
+
 .. toctree::
    :maxdepth: 2
 
