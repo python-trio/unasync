@@ -62,7 +62,7 @@ And then in your :code:`setup.py` place the following code.
 
 Then create a file **pyproject.toml** in the root of your project and mention **unasync** as one of your build dependency.
 
-.. code-block:: toml
+.. code-block::
 
    [build-system]
    requires = ["setuptools>=40.6.2", "wheel", "unasync"]
