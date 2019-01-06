@@ -62,11 +62,11 @@ And then in your :code:`setup.py` place the following code.
 
 Then create a file **pyproject.toml** in the root of your project and mention **unasync** as one of your build dependency.
 
-.. code-block::
+.. code-block:: toml
 
-   [build-system]
-   requires = ["setuptools>=40.6.2", "wheel", "unasync"]
-   build-backend = "setuptools.build_meta"
+    [build-system]
+    requires = ["setuptools>=40.6.2", "wheel", "unasync"]
+    build-backend = "setuptools.build_meta"
 
 And when you will build your package you will get your synchronous code in **_sync** folder.
 
