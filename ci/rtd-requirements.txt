@@ -2,4 +2,3 @@
 sphinx >= 1.6.1
 sphinx_rtd_theme
 sphinxcontrib-trio
-pytoml
