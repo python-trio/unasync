@@ -4,3 +4,7 @@ class TestImplementation:
 
     async def __aexit__(self):
         await self.close()
+
+    @asynccontextmanager
+    async def context_manager(self):
+        return self

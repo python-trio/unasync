@@ -4,3 +4,7 @@ class TestImplementation:
 
     def __exit__(self):
         self.close()
+
+    @contextmanager
+    def context_manager(self):
+        return self
