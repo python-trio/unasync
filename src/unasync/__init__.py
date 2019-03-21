@@ -13,6 +13,7 @@ ASYNC_TO_SYNC = {
     "__aexit__": "__exit__",
     "__aiter__": "__iter__",
     "__anext__": "__next__",
+    "asynccontextmanager": "contextmanager",
     # TODO StopIteration is still accepted in Python 2, but the right change
     # is 'raise StopAsyncIteration' -> 'return' since we want to use unasynced
     # code in Python 3.7+
