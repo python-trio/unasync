@@ -2,9 +2,9 @@ import copy
 import os
 import shutil
 import subprocess
-import tempfile
 
 import pytest
+from backports import tempfile
 
 import unasync
 
