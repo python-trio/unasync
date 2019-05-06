@@ -1,5 +1,7 @@
 """Top-level package for unasync."""
 
+from __future__ import print_function
+
 import os
 import tokenize as std_tokenize
 from tokenize import NAME, NEWLINE, NL, STRING, ENCODING
