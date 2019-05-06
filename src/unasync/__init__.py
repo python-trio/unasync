@@ -4,7 +4,7 @@ import os
 import tokenize as std_tokenize
 from tokenize import NAME, NEWLINE, NL, STRING, ENCODING
 
-from setuptools.command.build_py import build_py
+from setuptools.command import build_py as orig
 
 from ._version import __version__  # NOQA
 
@@ -78,7 +78,7 @@ def unasync_file(filepath, fromdir, todir):
             print(result, file=f, end="")
 
 
-class build_py(build_py):
+class build_py(orig.build_py):
     """
     Convert files in _async dir from being asynchronous to synchronous
     and saves them in _sync dir.
@@ -102,7 +102,7 @@ class build_py(build_py):
         self.byte_compile(self.get_outputs(include_bytecode=0))
 
     def build_module(self, module, module_file, package):
-        outfile, copied = super().build_module(module, module_file, package)
+        outfile, copied = orig.build_py.build_module(self, module, module_file, package)
         if copied:
             self._updated_files.append(outfile)
         return outfile, copied
