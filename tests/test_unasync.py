@@ -1,10 +1,12 @@
 import copy
+import io
 import os
 import shutil
 import subprocess
-import tempfile
 
 import pytest
+# Needed to get tempfile.TemporaryDirectory in Python 2
+from backports import tempfile
 
 import unasync
 
@@ -21,9 +23,10 @@ def test_unasync(source_file):
             os.path.join(ASYNC_DIR, source_file), fromdir=ASYNC_DIR, todir=tmpdir
         )
 
-        with open(os.path.join(SYNC_DIR, source_file)) as f:
+        encoding = 'latin-1' if 'encoding' in source_file else 'utf-8'
+        with io.open(os.path.join(SYNC_DIR, source_file), encoding=encoding) as f:
             truth = f.read()
-        with open(os.path.join(tmpdir, source_file)) as f:
+        with io.open(os.path.join(tmpdir, source_file), encoding=encoding) as f:
             unasynced_code = f.read()
             assert unasynced_code == truth
 
