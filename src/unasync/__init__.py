@@ -6,7 +6,6 @@ from __future__ import print_function
 import errno
 import os
 import tokenize as std_tokenize
-from tokenize import NAME, NEWLINE, NL, STRING, ENCODING
 
 from setuptools.command import build_py as orig
 
@@ -28,11 +27,11 @@ ASYNC_TO_SYNC = {
 def tokenize(f):
     last_end = (1, 0)
     for tok in std_tokenize.tokenize(f.readline):
-        if tok.type == ENCODING:
+        if tok.type == std_tokenize.ENCODING:
             continue
 
         if last_end[0] < tok.start[0]:
-            yield ("", STRING, " \\\n")
+            yield ("", std_tokenize.STRING, " \\\n")
             last_end = (tok.start[0], 0)
 
         space = ""
@@ -42,7 +41,7 @@ def tokenize(f):
         yield (space, tok.type, tok.string)
 
         last_end = tok.end
-        if tok.type in [NEWLINE, NL]:
+        if tok.type in [std_tokenize.NEWLINE, std_tokenize.NL]:
             last_end = (tok.end[0] + 1, 0)
 
 
@@ -57,7 +56,7 @@ def unasync_tokens(tokens):
             # `print( stuff)`
             used_space = space
         else:
-            if toknum == NAME and tokval in ASYNC_TO_SYNC:
+            if toknum == std_tokenize.NAME and tokval in ASYNC_TO_SYNC:
                 tokval = ASYNC_TO_SYNC[tokval]
             if used_space is None:
                 used_space = space
