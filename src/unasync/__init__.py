@@ -106,6 +106,8 @@ def unasync_file(filepath, fromdir, todir):
 
 class build_py(orig.build_py):
     """
+    Subclass build_py from setuptools to modify its behavior.
+
     Convert files in _async dir from being asynchronous to synchronous
     and saves them in _sync dir.
     """
@@ -120,6 +122,7 @@ class build_py(orig.build_py):
             self.build_packages()
             self.build_package_data()
 
+        # Our modification!
         for f in self._updated_files:
             if os.sep + "_async" + os.sep in f:
                 unasync_file(f, "_async", "_sync")
