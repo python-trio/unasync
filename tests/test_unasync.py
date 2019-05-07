@@ -5,6 +5,7 @@ import shutil
 import subprocess
 
 import pytest
+# Needed to get tempfile.TemporaryDirectory in Python 2
 from backports import tempfile
 
 import unasync
