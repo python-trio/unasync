@@ -1,12 +1,12 @@
 """Top-level package for unasync."""
 
-from ._version import __version__
-
-from setuptools.command.build_py import build_py
-
 import os
 import tokenize as std_tokenize
 from tokenize import NAME, NEWLINE, NL, STRING, ENCODING
+
+from setuptools.command.build_py import build_py
+
+from ._version import __version__  # NOQA
 
 ASYNC_TO_SYNC = {
     "__aenter__": "__enter__",
