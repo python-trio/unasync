@@ -2,9 +2,10 @@
 
 from __future__ import print_function
 
-
+import collections
 import errno
 import os
+import sys
 import tokenize as std_tokenize
 
 from setuptools.command import build_py as orig
@@ -23,13 +24,24 @@ ASYNC_TO_SYNC = {
     "StopAsyncIteration": "StopIteration",
 }
 
+Token = collections.namedtuple("Token", ["type", "string", "start", "end", "line"])
+
+
+def get_tokens(f):
+    if sys.version_info[0] == 2:
+        for tok in std_tokenize.generate_tokens(f.readline):
+            type_, string, start, end, line = tok
+            yield Token(type_, string, start, end, line)
+    else:
+        for tok in std_tokenize.tokenize(f.readline):
+            if tok.type == std_tokenize.ENCODING:
+                continue
+            yield tok
+
 
 def tokenize(f):
     last_end = (1, 0)
-    for tok in std_tokenize.tokenize(f.readline):
-        if tok.type == std_tokenize.ENCODING:
-            continue
-
+    for tok in get_tokens(f):
         if last_end[0] < tok.start[0]:
             yield ("", std_tokenize.STRING, " \\\n")
             last_end = (tok.start[0], 0)
@@ -78,14 +90,17 @@ def makedirs_existok(dir):
 
 def unasync_file(filepath, fromdir, todir):
     with open(filepath, "rb") as f:
-        encoding, _ = std_tokenize.detect_encoding(f.readline)
-        f.seek(0)
+        write_kwargs = {}
+        if sys.version_info[0] >= 3:
+            encoding, _ = std_tokenize.detect_encoding(f.readline)
+            write_kwargs['encoding'] = encoding
+            f.seek(0)
         tokens = tokenize(f)
         tokens = unasync_tokens(tokens)
         result = untokenize(tokens)
         outfilepath = filepath.replace(fromdir, todir)
         makedirs_existok(os.path.dirname(outfilepath))
-        with open(outfilepath, "w", encoding=encoding) as f:
+        with open(outfilepath, "w", **write_kwargs) as f:
             print(result, file=f, end="")
 
 
