@@ -2,6 +2,8 @@
 
 from __future__ import print_function
 
+
+import errno
 import os
 import tokenize as std_tokenize
 from tokenize import NAME, NEWLINE, NL, STRING, ENCODING
@@ -67,6 +69,14 @@ def untokenize(tokens):
     return "".join(space + tokval for space, tokval in tokens)
 
 
+def makedirs_existok(dir):
+    try:
+        os.makedirs(dir)
+    except OSError as e:
+        if e.errno != errno.EEXIST:
+            raise
+
+
 def unasync_file(filepath, fromdir, todir):
     with open(filepath, "rb") as f:
         encoding, _ = std_tokenize.detect_encoding(f.readline)
@@ -75,7 +85,7 @@ def unasync_file(filepath, fromdir, todir):
         tokens = unasync_tokens(tokens)
         result = untokenize(tokens)
         outfilepath = filepath.replace(fromdir, todir)
-        os.makedirs(os.path.dirname(outfilepath), exist_ok=True)
+        makedirs_existok(os.path.dirname(outfilepath))
         with open(outfilepath, "w", encoding=encoding) as f:
             print(result, file=f, end="")
 
