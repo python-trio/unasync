@@ -11,9 +11,9 @@ unasync
     :alt: AppVeyor Build Status
     :target: https://ci.appveyor.com/project/njsmith/unasync
 
-.. |codecov| image:: https://codecov.io/gh/RatanShreshtha/unasync/branch/master/graph/badge.svg
+.. |codecov| image:: https://codecov.io/gh/python-trio/unasync/branch/master/graph/badge.svg
     :alt: Coverage Status
-    :target: https://codecov.io/gh/RatanShreshtha/unasync
+    :target: https://codecov.io/gh/python-trio/unasync
 
 .. |documentation| image:: https://readthedocs.org/projects/unasync/badge/?version=latest
     :alt: Documentation Status
