@@ -10,7 +10,7 @@ setup(
     name="unasync",
     version=__version__,
     description="The async transformation code.",
-    url="https://github.com/RatanShreshtha/unasync",
+    url="https://github.com/python-trio/unasync",
     long_description=LONG_DESC,
     long_description_content_type="text/x-rst",
     author="Ratan Kulshreshtha",
