@@ -75,4 +75,4 @@ def test_project_structure_after_build_py():
         print(list_files(os.path.join(source_pkg_dir, "src/example_pkg/_async/.")))
         print(list_files(os.path.join(pkg_dir, "build/lib/example_pkg/_sync/.")))
 
-        assert list_files(os.path.join(tmpdir, "src/example_pkg/_async/.")) == list_files(os.path.join(pkg_dir, "build/lib/example_pkg/_sync/."))
+        assert list_files(os.path.join(source_pkg_dir, "src/example_pkg/_async/.")) == list_files(os.path.join(pkg_dir, "build/lib/example_pkg/_sync/."))
