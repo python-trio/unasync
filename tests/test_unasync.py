@@ -72,7 +72,7 @@ def test_project_structure_after_build_py():
         env["PYTHONPATH"] = os.path.realpath(os.path.join(TEST_DIR, ".."))
         subprocess.check_call(["python", "setup.py", "build"], cwd=pkg_dir, env=env)
 
-        print(list_files(os.path.join(source_pkg_dir, "src/example_pkg/_async/.")))
-        print(list_files(os.path.join(pkg_dir, "build/lib/example_pkg/_sync/.")))
+        _async_dir_tree = list_files(os.path.join(source_pkg_dir, "src/example_pkg/_async/."))
+        unasynced_dir_tree = list_files(os.path.join(pkg_dir, "build/lib/example_pkg/_sync/."))
 
-        assert list_files(os.path.join(source_pkg_dir, "src/example_pkg/_async/.")) == list_files(os.path.join(pkg_dir, "build/lib/example_pkg/_sync/."))
+        assert  _async_dir_tree == unasynced_dir_tree
