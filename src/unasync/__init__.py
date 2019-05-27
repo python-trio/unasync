@@ -93,7 +93,7 @@ def unasync_file(filepath, fromdir, todir):
         write_kwargs = {}
         if sys.version_info[0] >= 3:
             encoding, _ = std_tokenize.detect_encoding(f.readline)
-            write_kwargs['encoding'] = encoding
+            write_kwargs["encoding"] = encoding
             f.seek(0)
         tokens = tokenize(f)
         tokens = unasync_tokens(tokens)

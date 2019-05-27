@@ -6,9 +6,6 @@ import subprocess
 
 import pytest
 
-# Needed to get tempfile.TemporaryDirectory in Python 2
-from backports import tempfile
-
 import unasync
 
 TEST_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -32,47 +29,53 @@ def list_files(startpath):
 
 
 @pytest.mark.parametrize("source_file", TEST_FILES)
-def test_unasync(source_file):
-    with tempfile.TemporaryDirectory() as tmpdir:
-        unasync.unasync_file(
-            os.path.join(ASYNC_DIR, source_file), fromdir=ASYNC_DIR, todir=tmpdir
-        )
+def test_unasync(tmpdir, source_file):
 
-        encoding = "latin-1" if "encoding" in source_file else "utf-8"
-        with io.open(os.path.join(SYNC_DIR, source_file), encoding=encoding) as f:
-            truth = f.read()
-        with io.open(os.path.join(tmpdir, source_file), encoding=encoding) as f:
-            unasynced_code = f.read()
-            assert unasynced_code == truth
+    tmpdir = str(tmpdir)
 
+    unasync.unasync_file(
+        os.path.join(ASYNC_DIR, source_file), fromdir=ASYNC_DIR, todir=tmpdir
+    )
 
-def test_build_py():
-    with tempfile.TemporaryDirectory() as tmpdir:
-        source_pkg_dir = os.path.join(TEST_DIR, "example_pkg")
-        pkg_dir = os.path.join(tmpdir, "example_pkg")
-        shutil.copytree(source_pkg_dir, pkg_dir)
-
-        env = copy.copy(os.environ)
-        env["PYTHONPATH"] = os.path.realpath(os.path.join(TEST_DIR, ".."))
-        subprocess.check_call(["python", "setup.py", "build"], cwd=pkg_dir, env=env)
-
-        unasynced = os.path.join(pkg_dir, "build/lib/example_pkg/_sync/__init__.py")
-        with open(unasynced) as f:
-            unasynced_code = f.read()
-            assert unasynced_code == "def f():\n    return 1\n"
+    encoding = "latin-1" if "encoding" in source_file else "utf-8"
+    with io.open(os.path.join(SYNC_DIR, source_file), encoding=encoding) as f:
+        truth = f.read()
+    with io.open(os.path.join(tmpdir, source_file), encoding=encoding) as f:
+        unasynced_code = f.read()
+        assert unasynced_code == truth
 
 
-def test_project_structure_after_build_py():
-    with tempfile.TemporaryDirectory() as tmpdir:
-        source_pkg_dir = os.path.join(TEST_DIR, "example_pkg")
-        pkg_dir = os.path.join(tmpdir, "example_pkg")
-        shutil.copytree(source_pkg_dir, pkg_dir)
+def test_build_py(tmpdir):
 
-        env = copy.copy(os.environ)
-        env["PYTHONPATH"] = os.path.realpath(os.path.join(TEST_DIR, ".."))
-        subprocess.check_call(["python", "setup.py", "build"], cwd=pkg_dir, env=env)
+    source_pkg_dir = os.path.join(TEST_DIR, "example_pkg")
+    pkg_dir = os.path.join(tmpdir, "example_pkg")
+    shutil.copytree(source_pkg_dir, pkg_dir)
 
-        _async_dir_tree = list_files(os.path.join(source_pkg_dir, "src/example_pkg/_async/."))
-        unasynced_dir_tree = list_files(os.path.join(pkg_dir, "build/lib/example_pkg/_sync/."))
+    env = copy.copy(os.environ)
+    env["PYTHONPATH"] = os.path.realpath(os.path.join(TEST_DIR, ".."))
+    subprocess.check_call(["python", "setup.py", "build"], cwd=pkg_dir, env=env)
 
-        assert  _async_dir_tree == unasynced_dir_tree
+    unasynced = os.path.join(pkg_dir, "build/lib/example_pkg/_sync/__init__.py")
+    with open(unasynced) as f:
+        unasynced_code = f.read()
+        assert unasynced_code == "def f():\n    return 1\n"
+
+
+def test_project_structure_after_build_py(tmpdir):
+
+    source_pkg_dir = os.path.join(TEST_DIR, "example_pkg")
+    pkg_dir = os.path.join(tmpdir, "example_pkg")
+    shutil.copytree(source_pkg_dir, pkg_dir)
+
+    env = copy.copy(os.environ)
+    env["PYTHONPATH"] = os.path.realpath(os.path.join(TEST_DIR, ".."))
+    subprocess.check_call(["python", "setup.py", "build"], cwd=pkg_dir, env=env)
+
+    _async_dir_tree = list_files(
+        os.path.join(source_pkg_dir, "src/example_pkg/_async/.")
+    )
+    unasynced_dir_tree = list_files(
+        os.path.join(pkg_dir, "build/lib/example_pkg/_sync/.")
+    )
+
+    assert _async_dir_tree == unasynced_dir_tree
