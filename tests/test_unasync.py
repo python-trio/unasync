@@ -47,6 +47,8 @@ def test_unasync(tmpdir, source_file):
 
 def test_build_py(tmpdir):
 
+    tmpdir = str(tmpdir)
+
     source_pkg_dir = os.path.join(TEST_DIR, "example_pkg")
     pkg_dir = os.path.join(tmpdir, "example_pkg")
     shutil.copytree(source_pkg_dir, pkg_dir)
@@ -62,6 +64,8 @@ def test_build_py(tmpdir):
 
 
 def test_project_structure_after_build_py(tmpdir):
+
+    tmpdir = str(tmpdir)
 
     source_pkg_dir = os.path.join(TEST_DIR, "example_pkg")
     pkg_dir = os.path.join(tmpdir, "example_pkg")
