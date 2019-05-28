@@ -31,10 +31,8 @@ def list_files(startpath):
 @pytest.mark.parametrize("source_file", TEST_FILES)
 def test_unasync(tmpdir, source_file):
 
-    tmpdir = str(tmpdir)
-
     unasync.unasync_file(
-        os.path.join(ASYNC_DIR, source_file), fromdir=ASYNC_DIR, todir=tmpdir
+        os.path.join(ASYNC_DIR, source_file), fromdir=ASYNC_DIR, todir=str(tmpdir)
     )
 
     encoding = "latin-1" if "encoding" in source_file else "utf-8"
@@ -47,10 +45,8 @@ def test_unasync(tmpdir, source_file):
 
 def test_build_py(tmpdir):
 
-    tmpdir = str(tmpdir)
-
     source_pkg_dir = os.path.join(TEST_DIR, "example_pkg")
-    pkg_dir = os.path.join(tmpdir, "example_pkg")
+    pkg_dir = tmpdir / "example_pkg"
     shutil.copytree(source_pkg_dir, pkg_dir)
 
     env = copy.copy(os.environ)
@@ -65,10 +61,8 @@ def test_build_py(tmpdir):
 
 def test_project_structure_after_build_py(tmpdir):
 
-    tmpdir = str(tmpdir)
-
     source_pkg_dir = os.path.join(TEST_DIR, "example_pkg")
-    pkg_dir = os.path.join(tmpdir, "example_pkg")
+    pkg_dir = tmpdir / "example_pkg"
     shutil.copytree(source_pkg_dir, pkg_dir)
 
     env = copy.copy(os.environ)

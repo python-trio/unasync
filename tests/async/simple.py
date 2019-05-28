@@ -5,7 +5,11 @@ class TestImplementation:
         self.s = "UTF-8: ❄"
 
     async def get_a_b(self):
-        s = "a is %s b is %s" % (self.a, self.b)
+        # fmt: off
+        s = "a is %s b is %s" % \
+            (self.a,
+             self.b)
+        # fmt: on
         return s
 
     async def f(self):
