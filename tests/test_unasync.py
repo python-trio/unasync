@@ -38,7 +38,7 @@ def test_unasync(tmpdir, source_file):
     encoding = "latin-1" if "encoding" in source_file else "utf-8"
     with io.open(os.path.join(SYNC_DIR, source_file), encoding=encoding) as f:
         truth = f.read()
-    with io.open(os.path.join(tmpdir, source_file), encoding=encoding) as f:
+    with io.open(os.path.join(str(tmpdir), source_file), encoding=encoding) as f:
         unasynced_code = f.read()
         assert unasynced_code == truth
 
@@ -46,7 +46,7 @@ def test_unasync(tmpdir, source_file):
 def test_build_py(tmpdir):
 
     source_pkg_dir = os.path.join(TEST_DIR, "example_pkg")
-    pkg_dir = tmpdir / "example_pkg"
+    pkg_dir = str(tmpdir) + "/" + "example_pkg"
     shutil.copytree(source_pkg_dir, pkg_dir)
 
     env = copy.copy(os.environ)
@@ -62,7 +62,7 @@ def test_build_py(tmpdir):
 def test_project_structure_after_build_py(tmpdir):
 
     source_pkg_dir = os.path.join(TEST_DIR, "example_pkg")
-    pkg_dir = tmpdir / "example_pkg"
+    pkg_dir = str(tmpdir) + "/" + "example_pkg"
     shutil.copytree(source_pkg_dir, pkg_dir)
 
     env = copy.copy(os.environ)
