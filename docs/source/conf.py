@@ -19,15 +19,16 @@
 #
 import os
 import sys
+
 # So autodoc can import our package
-sys.path.insert(0, os.path.abspath('../..'))
+sys.path.insert(0, os.path.abspath("../.."))
 
 # Warn about all references to unknown targets
 nitpicky = True
 # Except for these ones, which we expect to point to unknown targets:
 nitpick_ignore = [
     # Format is ("sphinx reference type", "string"), e.g.:
-    ("py:obj", "bytes-like"),
+    ("py:obj", "bytes-like")
 ]
 
 # -- General configuration ------------------------------------------------
@@ -40,16 +41,16 @@ nitpick_ignore = [
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
 extensions = [
-    'sphinx.ext.autodoc',
-    'sphinx.ext.intersphinx',
-    'sphinx.ext.coverage',
-    'sphinx.ext.napoleon',
-    'sphinxcontrib_trio',
+    "sphinx.ext.autodoc",
+    "sphinx.ext.intersphinx",
+    "sphinx.ext.coverage",
+    "sphinx.ext.napoleon",
+    "sphinxcontrib_trio",
 ]
 
 intersphinx_mapping = {
-    "python": ('https://docs.python.org/3', None),
-    "trio": ('https://trio.readthedocs.io/en/stable', None),
+    "python": ("https://docs.python.org/3", None),
+    "trio": ("https://trio.readthedocs.io/en/stable", None),
 }
 
 autodoc_member_order = "bysource"
@@ -61,15 +62,15 @@ templates_path = []
 # You can specify multiple suffix as a list of string:
 #
 # source_suffix = ['.rst', '.md']
-source_suffix = '.rst'
+source_suffix = ".rst"
 
 # The master toctree document.
-master_doc = 'index'
+master_doc = "index"
 
 # General information about the project.
-project = 'unasync'
-copyright = 'The unasync authors'
-author = 'The unasync authors'
+project = "unasync"
+copyright = "The unasync authors"
+author = "The unasync authors"
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
@@ -77,6 +78,7 @@ author = 'The unasync authors'
 #
 # The short X.Y version.
 import unasync
+
 version = unasync.__version__
 # The full version, including alpha/beta/rc tags.
 release = version
@@ -94,10 +96,10 @@ language = None
 exclude_patterns = []
 
 # The name of the Pygments (syntax highlighting) style to use.
-pygments_style = 'sphinx'
+pygments_style = "sphinx"
 
 # The default language for :: blocks
-highlight_language = 'python3'
+highlight_language = "python3"
 
 # If true, `todo` and `todoList` produce output, else they produce nothing.
 todo_include_todos = False
@@ -108,13 +110,14 @@ todo_include_todos = False
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
 #
-#html_theme = 'alabaster'
+# html_theme = 'alabaster'
 
 # We have to set this ourselves, not only because it's useful for local
 # testing, but also because if we don't then RTD will throw away our
 # html_theme_options.
 import sphinx_rtd_theme
-html_theme = 'sphinx_rtd_theme'
+
+html_theme = "sphinx_rtd_theme"
 html_theme_path = [sphinx_rtd_theme.get_html_theme_path()]
 
 # Theme options are theme-specific and customize the look and feel of a theme
@@ -134,13 +137,13 @@ html_theme_options = {
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
-html_static_path = ['_static']
+html_static_path = ["_static"]
 
 
 # -- Options for HTMLHelp output ------------------------------------------
 
 # Output file base name for HTML help builder.
-htmlhelp_basename = 'unasyncdoc'
+htmlhelp_basename = "unasyncdoc"
 
 
 # -- Options for LaTeX output ---------------------------------------------
@@ -149,15 +152,12 @@ latex_elements = {
     # The paper size ('letterpaper' or 'a4paper').
     #
     # 'papersize': 'letterpaper',
-
     # The font size ('10pt', '11pt' or '12pt').
     #
     # 'pointsize': '10pt',
-
     # Additional stuff for the LaTeX preamble.
     #
     # 'preamble': '',
-
     # Latex figure (float) alignment
     #
     # 'figure_align': 'htbp',
@@ -166,20 +166,14 @@ latex_elements = {
 # Grouping the document tree into LaTeX files. List of tuples
 # (source start file, target name, title,
 #  author, documentclass [howto, manual, or own class]).
-latex_documents = [
-    (master_doc, 'unasync.tex', 'Trio Documentation',
-     author, 'manual'),
-]
+latex_documents = [(master_doc, "unasync.tex", "Trio Documentation", author, "manual")]
 
 
 # -- Options for manual page output ---------------------------------------
 
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
-man_pages = [
-    (master_doc, 'unasync', 'unasync Documentation',
-     [author], 1)
-]
+man_pages = [(master_doc, "unasync", "unasync Documentation", [author], 1)]
 
 
 # -- Options for Texinfo output -------------------------------------------
@@ -188,7 +182,13 @@ man_pages = [
 # (source start file, target name, title, author,
 #  dir menu entry, description, category)
 texinfo_documents = [
-    (master_doc, 'unasync', 'unasync Documentation',
-     author, 'unasync', 'The async transformation code.',
-     'Miscellaneous'),
+    (
+        master_doc,
+        "unasync",
+        "unasync Documentation",
+        author,
+        "unasync",
+        "The async transformation code.",
+        "Miscellaneous",
+    )
 ]
