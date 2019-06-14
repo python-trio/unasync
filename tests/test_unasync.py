@@ -57,6 +57,24 @@ def test_build_py_modules(tmpdir):
         unasynced_code = f.read()
         assert unasynced_code == "def f():\n    return 1\n"
 
+
+def test_project_structure_after_build_py_modules(tmpdir):
+
+    source_modules_dir = os.path.join(TEST_DIR, "example_mod")
+    mod_dir = str(tmpdir) + "/" + "example_mod"
+    shutil.copytree(source_modules_dir, mod_dir)
+
+    env = copy.copy(os.environ)
+    env["PYTHONPATH"] = os.path.realpath(os.path.join(TEST_DIR, ".."))
+    subprocess.check_call(
+        ["python", "setup.py", "build"], cwd=mod_dir, env=env)
+
+    build_dir_tree = list_files(
+        os.path.join(source_modules_dir, "build")
+    )
+
+    print(build_dir_tree)
+
 def test_build_py_packages(tmpdir):
 
     source_pkg_dir = os.path.join(TEST_DIR, "example_pkg")
@@ -73,7 +91,7 @@ def test_build_py_packages(tmpdir):
         assert unasynced_code == "def f():\n    return 1\n"
 
 
-def test_project_structure_after_build_py(tmpdir):
+def test_project_structure_after_build_py_packages(tmpdir):
 
     source_pkg_dir = os.path.join(TEST_DIR, "example_pkg")
     pkg_dir = str(tmpdir) + "/" + "example_pkg"
