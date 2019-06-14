@@ -67,7 +67,7 @@ def test_build_py_packages(tmpdir):
     env["PYTHONPATH"] = os.path.realpath(os.path.join(TEST_DIR, ".."))
     subprocess.check_call(["python", "setup.py", "build"], cwd=pkg_dir, env=env)
 
-    unasynced = os.path.join(pkg_dir, "build/lib/example_pkg/_sync/__init__.py")
+    unasynced = os.path.join(pkg_dir, "build", "lib", "example_pkg", "_sync", "__init__.py")
     with open(unasynced) as f:
         unasynced_code = f.read()
         assert unasynced_code == "def f():\n    return 1\n"
