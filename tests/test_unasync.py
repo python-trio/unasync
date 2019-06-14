@@ -73,7 +73,7 @@ def test_build_py_packages(tmpdir):
         assert unasynced_code == "def f():\n    return 1\n"
 
 
-def test_project_structure_after_build_py(tmpdir):
+def test_project_structure_after_build_py_packages(tmpdir):
 
     source_pkg_dir = os.path.join(TEST_DIR, "example_pkg")
     pkg_dir = str(tmpdir) + "/" + "example_pkg"
