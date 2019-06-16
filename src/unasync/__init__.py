@@ -7,7 +7,6 @@ import errno
 import os
 import sys
 import tokenize as std_tokenize
-from pprint import pprint
 
 from setuptools.command import build_py as orig
 
@@ -124,10 +123,8 @@ class build_py(orig.build_py):
             self.build_package_data()
 
         # Our modification!
-        pprint(self._updated_files)
         for f in self._updated_files:
             if os.sep + "_async" + os.sep in f:
-                print("unasuncing file --->>", f)
                 unasync_file(f, "_async", "_sync")
 
         # Remaining base class code

@@ -55,10 +55,7 @@ def test_build_py_modules(tmpdir):
 
     unasynced = os.path.join(mod_dir, "build/lib/_sync/some_file.py")
     tree_build_dir = list_files(mod_dir)
-    print("unasynched --->> {}".format(unasync))
-    print("tree of build directory --->> {}".format(tree_build_dir))
 
-    assert unasynced == tree_build_dir
     with open(unasynced) as f:
         unasynced_code = f.read()
         assert unasynced_code == "def f():\n    return 1\n"
