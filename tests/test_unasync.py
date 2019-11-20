@@ -43,6 +43,23 @@ def test_unasync(tmpdir, source_file):
         assert unasynced_code == truth
 
 
+def test_unasync_substitutions(tmpdir):
+    FROM_DIR = os.path.join(TEST_DIR, "substitutions")
+    unasync.unasync_file(
+        os.path.join(FROM_DIR, "urllib3_async.py"),
+        fromdir=FROM_DIR,
+        todir=str(tmpdir),
+        substitutions={'backend="trio"': ""},
+    )
+
+    with open(os.path.join(FROM_DIR, "urllib3_sync.py")) as f:
+        truth = f.read()
+    with open(os.path.join(str(tmpdir), "urllib3_async.py")) as f:
+        unasynced_code = f.read()
+
+    assert unasynced_code == truth
+
+
 def test_build_py_modules(tmpdir):
 
     source_modules_dir = os.path.join(TEST_DIR, "example_mod")

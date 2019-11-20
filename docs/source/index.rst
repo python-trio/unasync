@@ -70,6 +70,12 @@ Then create a file **pyproject.toml** in the root of your project and mention **
 
 And when you will build your package you will get your synchronous code in **_sync** folder.
 
+API
+---
+
+You can call unasync directly using :func:`unasync.unasync_file`.
+
+.. autofunction:: unasync.unasync_file
 
 .. toctree::
    :maxdepth: 2

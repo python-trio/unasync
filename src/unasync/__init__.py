@@ -5,6 +5,7 @@ from __future__ import print_function
 import collections
 import errno
 import os
+import re
 import sys
 import tokenize as std_tokenize
 
@@ -80,6 +81,12 @@ def untokenize(tokens):
     return "".join(space + tokval for space, tokval in tokens)
 
 
+def substitute(result, substitutions):
+    for from_pattern, to_pattern in substitutions.items():
+        result = re.sub(from_pattern, to_pattern, result)
+    return result
+
+
 def makedirs_existok(dir):
     try:
         os.makedirs(dir)
@@ -88,7 +95,21 @@ def makedirs_existok(dir):
             raise
 
 
-def unasync_file(filepath, fromdir, todir):
+def unasync_file(filepath, fromdir, todir, substitutions=None):
+    """Remove async/await keywords and perform substitutions
+
+    Args:
+      filepath (str): The full path to the file being transformed.
+      fromdir (str): The directory where the origin file is stored.
+      todir (str): The directory where the transformed file should be placed.
+      substitutions (dict): Regexes passed to re.sub() to perform substitutions. By
+          default, `Async` prefix are removed, so AsyncIterator becomes Iterator.
+    """
+    if substitutions is None:
+        substitutions = {}
+    # default substitution, Async* -> *
+    substitutions[r"\bAsync(\w+)\b"] = r"\1"
+
     with open(filepath, "rb") as f:
         write_kwargs = {}
         if sys.version_info[0] >= 3:
@@ -98,6 +119,7 @@ def unasync_file(filepath, fromdir, todir):
         tokens = tokenize(f)
         tokens = unasync_tokens(tokens)
         result = untokenize(tokens)
+        result = substitute(result, substitutions)
         outfilepath = filepath.replace(fromdir, todir)
         makedirs_existok(os.path.dirname(outfilepath))
         with open(outfilepath, "w", **write_kwargs) as f:
