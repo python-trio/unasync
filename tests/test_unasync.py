@@ -8,7 +8,7 @@ import pytest
 
 import unasync
 
-TEST_DIR = os.path.dirname(os.path.abspath(__file__))
+TEST_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "data")
 ASYNC_DIR = os.path.join(TEST_DIR, "async")
 SYNC_DIR = os.path.join(TEST_DIR, "sync")
 TEST_FILES = sorted([f for f in os.listdir(ASYNC_DIR) if f.endswith(".py")])
