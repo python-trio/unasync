@@ -18,6 +18,9 @@ ASYNC_TO_SYNC = {
     "__aiter__": "__iter__",
     "__anext__": "__next__",
     "asynccontextmanager": "contextmanager",
+    "AsyncIterable": "Iterable",
+    "AsyncIterator": "Iterator",
+    "AsyncGenerator": "Generator",
     # TODO StopIteration is still accepted in Python 2, but the right change
     # is 'raise StopAsyncIteration' -> 'return' since we want to use unasynced
     # code in Python 3.7+
@@ -68,8 +71,16 @@ def unasync_tokens(tokens):
             # `print( stuff)`
             used_space = space
         else:
-            if toknum == std_tokenize.NAME and tokval in ASYNC_TO_SYNC:
-                tokval = ASYNC_TO_SYNC[tokval]
+            if toknum == std_tokenize.NAME:
+                if tokval in ASYNC_TO_SYNC:
+                    tokval = ASYNC_TO_SYNC[tokval]
+                # Convert classes prefixed with 'Async' into 'Sync'
+                elif (
+                    len(tokval) > 5
+                    and tokval.startswith("Async")
+                    and tokval[5].isupper()
+                ):
+                    tokval = "Sync" + tokval[5:]
             if used_space is None:
                 used_space = space
             yield (used_space, tokval)
