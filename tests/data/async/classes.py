@@ -1,0 +1,3 @@
+class AsyncSocket(object):
+    async def send_all(self, data):
+        ...
