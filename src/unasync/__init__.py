@@ -76,7 +76,6 @@ def unasync_name(name):
 def unasync_tokens(tokens):
     # TODO __await__, ...?
     used_space = None
-
     for space, toknum, tokval in tokens:
         if tokval in ["async", "await"]:
             # When removing async or await, we want to use the whitespace that

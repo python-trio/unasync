@@ -1,8 +1,8 @@
-class SyncLock:
+class SyncLock(object):
     ...
 
 
-class SyncSocket:
+class SyncSocket(object):
     def __init__(self, send_lock: SyncLock):
         ...
 

@@ -1,8 +1,8 @@
-class AsyncLock:
+class AsyncLock(object):
     ...
 
 
-class AsyncSocket:
+class AsyncSocket(object):
     def __init__(self, send_lock: AsyncLock):
         ...
 
