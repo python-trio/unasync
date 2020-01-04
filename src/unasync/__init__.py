@@ -76,7 +76,6 @@ def unasync_name(name):
 def unasync_tokens(tokens):
     # TODO __await__, ...?
     used_space = None
-    previous_tokval = None
 
     for space, toknum, tokval in tokens:
         if tokval in ["async", "await"]:
@@ -88,16 +87,13 @@ def unasync_tokens(tokens):
         else:
             if toknum == std_tokenize.NAME:
                 tokval = unasync_name(tokval)
-            elif previous_tokval == ":" and toknum == std_tokenize.STRING:
-                # Type hint using a forward reference.
+            elif toknum == std_tokenize.STRING:
                 left_quote, name, right_quote = tokval[0], tokval[1:-1], tokval[-1]
                 tokval = left_quote + unasync_name(name) + right_quote
             if used_space is None:
                 used_space = space
             yield (used_space, tokval)
             used_space = None
-
-        previous_tokval = tokval
 
 
 def untokenize(tokens):
