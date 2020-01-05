@@ -1,3 +1,13 @@
+class AsyncLock(object):
+    ...
+
+
 class AsyncSocket(object):
+    def __init__(self, send_lock: AsyncLock):
+        ...
+
+    async def __aenter__(self) -> "AsyncSocket":
+        ...
+
     async def send_all(self, data):
         ...

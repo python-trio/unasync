@@ -60,6 +60,19 @@ def tokenize(f):
             last_end = (tok.end[0] + 1, 0)
 
 
+def unasync_name(name):
+    if name in ASYNC_TO_SYNC:
+        return ASYNC_TO_SYNC[name]
+    # Convert classes prefixed with 'Async' into 'Sync'
+    elif (
+        len(name) > 5
+        and name.startswith("Async")
+        and name[5].isupper()
+    ):
+        return "Sync" + name[5:]
+    return name
+
+
 def unasync_tokens(tokens):
     # TODO __await__, ...?
     used_space = None
@@ -72,15 +85,10 @@ def unasync_tokens(tokens):
             used_space = space
         else:
             if toknum == std_tokenize.NAME:
-                if tokval in ASYNC_TO_SYNC:
-                    tokval = ASYNC_TO_SYNC[tokval]
-                # Convert classes prefixed with 'Async' into 'Sync'
-                elif (
-                    len(tokval) > 5
-                    and tokval.startswith("Async")
-                    and tokval[5].isupper()
-                ):
-                    tokval = "Sync" + tokval[5:]
+                tokval = unasync_name(tokval)
+            elif toknum == std_tokenize.STRING:
+                left_quote, name, right_quote = tokval[0], tokval[1:-1], tokval[-1]
+                tokval = left_quote + unasync_name(name) + right_quote
             if used_space is None:
                 used_space = space
             yield (used_space, tokval)
