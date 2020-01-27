@@ -96,3 +96,19 @@ def test_project_structure_after_build_py_packages(tmpdir):
     )
 
     assert _async_dir_tree == unasynced_dir_tree
+
+
+def test_project_structure_after_customized_build_py_packages(tmpdir):
+
+    source_pkg_dir = os.path.join(TEST_DIR, "example_custom_pkg")
+    pkg_dir = str(tmpdir) + "/" + "example_custom_pkg"
+    shutil.copytree(source_pkg_dir, pkg_dir)
+
+    env = copy.copy(os.environ)
+    env["PYTHONPATH"] = os.path.realpath(os.path.join(TEST_DIR, ".."))
+    subprocess.check_call(["python", "setup.py", "build"], cwd=pkg_dir, env=env)
+
+    _async_dir_tree = list_files(os.path.join(source_pkg_dir, "src/ahip/."))
+    unasynced_dir_tree = list_files(os.path.join(pkg_dir, "build/lib/hip/."))
+
+    assert _async_dir_tree == unasynced_dir_tree
