@@ -64,11 +64,7 @@ def unasync_name(name):
     if name in ASYNC_TO_SYNC:
         return ASYNC_TO_SYNC[name]
     # Convert classes prefixed with 'Async' into 'Sync'
-    elif (
-        len(name) > 5
-        and name.startswith("Async")
-        and name[5].isupper()
-    ):
+    elif len(name) > 5 and name.startswith("Async") and name[5].isupper():
         return "Sync" + name[5:]
     return name
 
@@ -131,7 +127,11 @@ class build_py(orig.build_py):
     and saves them in _sync dir.
     """
 
+    RENAME_DIR_FROM_TO = ("_async", "_sync")  # Controls what directory will be renamed.
+
     def run(self):
+        dir_from, dir_to = self.RENAME_DIR_FROM_TO
+
         self._updated_files = []
 
         # Base class code
@@ -143,8 +143,8 @@ class build_py(orig.build_py):
 
         # Our modification!
         for f in self._updated_files:
-            if os.sep + "_async" + os.sep in f:
-                unasync_file(f, "_async", "_sync")
+            if os.sep + dir_from + os.sep in f:
+                unasync_file(f, dir_from, dir_to)
 
         # Remaining base class code
         self.byte_compile(self.get_outputs(include_bytecode=0))
@@ -154,3 +154,10 @@ class build_py(orig.build_py):
         if copied:
             self._updated_files.append(outfile)
         return outfile, copied
+
+
+def customize_build_py(rename_dir_from_to=("_async", "_sync")):
+    class _build_py(build_py):
+        RENAME_DIR_FROM_TO = rename_dir_from_to
+
+    return _build_py
