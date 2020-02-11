@@ -1,9 +1,3 @@
-.. documentation master file, created by
-   sphinx-quickstart on Sat Jan 21 19:11:14 2017.
-   You can adapt this file completely to your liking, but it should at least
-   contain the root `toctree` directive.
-
-
 =======
 unasync
 =======
@@ -56,7 +50,7 @@ And then in your :code:`setup.py` place the following code.
 
     setuptools.setup(
         ...
-        cmdclass={'build_py': unasync.build_py},
+        cmdclass={'build_py': unasync.cmdclass_build_py()},
         ...
     )
 
@@ -69,6 +63,28 @@ Then create a file **pyproject.toml** in the root of your project and mention **
     build-backend = "setuptools.build_meta"
 
 And when you will build your package you will get your synchronous code in **_sync** folder.
+
+If you'd like to customize where certain rules are applied you can pass
+customized :code:`unasync.Rule` instances to :code:`unasync.cmdclass_build_py()`
+
+.. code-block:: python
+
+    import unasync
+
+    setuptools.setup(
+        ...
+        cmdclass={'build_py': unasync.cmdclass_build_py(rules=[
+            # This rule transforms files within 'ahip' -> 'hip'
+            # instead of the default '_async' -> '_sync'.
+            unasync.Rule("/ahip/", "/hip/"),
+
+            # This rule's 'fromdir' is more specific so will take precedent
+            # over the above rule if the path is within /ahip/tests/...
+            # This rule adds an additional token replacement over the default replacements.
+            unasync.Rule("/ahip/tests/", "/hip/tests/", replacements={"ahip", "hip"}),
+        ])},
+        ...
+    )
 
 
 .. toctree::

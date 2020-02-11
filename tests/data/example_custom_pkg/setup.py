@@ -11,13 +11,13 @@ setuptools.setup(
     url="https://github.com/pypa/sampleproject",
     packages=["ahip", "ahip.some_dir", "ahip.tests"],
     cmdclass={
-        "build_py": unasync.customize_build_py(
+        "build_py": unasync.cmdclass_build_py(
             rules=[
                 unasync.Rule(fromdir="/ahip/", todir="/hip/"),
                 unasync.Rule(
                     fromdir="/ahip/tests/",
                     todir="/hip/tests/",
-                    additional_replacements={"ahip": "hip"},
+                    replacements={"ahip": "hip"},
                 ),
             ]
         )

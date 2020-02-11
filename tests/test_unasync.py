@@ -36,9 +36,8 @@ def test_rule_on_short_path():
 @pytest.mark.parametrize("source_file", TEST_FILES)
 def test_unasync(tmpdir, source_file):
 
-    unasync.unasync_file(
-        os.path.join(ASYNC_DIR, source_file), fromdir=ASYNC_DIR, todir=str(tmpdir)
-    )
+    rule = unasync.Rule(fromdir=ASYNC_DIR, todir=str(tmpdir))
+    rule.unasync_file(os.path.join(ASYNC_DIR, source_file))
 
     encoding = "latin-1" if "encoding" in source_file else "utf-8"
     with io.open(os.path.join(SYNC_DIR, source_file), encoding=encoding) as f:

@@ -14,11 +14,7 @@ from ._version import __version__  # NOQA
 
 __all__ = [
     "Rule",
-    "unasync_file",
-    "unasync_tokens",
-    "unasync_name",
-    "build_py",
-    "customize_build_py",
+    "cmdclass_build_py",
 ]
 
 
@@ -41,13 +37,13 @@ _ASYNC_TO_SYNC = {
 class Rule:
     """A single set of rules for 'unasync'ing file(s)"""
 
-    def __init__(self, fromdir, todir, additional_replacements=None):
+    def __init__(self, fromdir, todir, replacements=None):
         self.fromdir = fromdir.replace("/", os.sep)
         self.todir = todir.replace("/", os.sep)
 
         # Add any additional user-defined token replacements to our list.
         self.token_replacements = _ASYNC_TO_SYNC.copy()
-        for key, val in (additional_replacements or {}).items():
+        for key, val in (replacements or {}).items():
             self.token_replacements[key] = val
 
     def match(self, filepath):
@@ -112,17 +108,6 @@ class Rule:
         return name
 
 
-_DEFAULT_RULE = Rule(fromdir="/_async/", todir="/_sync/")
-
-unasync_tokens = _DEFAULT_RULE.unasync_tokens
-unasync_name = _DEFAULT_RULE.unasync_name
-
-
-def unasync_file(filepath, fromdir, todir):
-    rule = Rule(fromdir, todir)
-    return rule.unasync_file(filepath)
-
-
 Token = collections.namedtuple("Token", ["type", "string", "start", "end", "line"])
 
 
@@ -168,7 +153,10 @@ def makedirs_existok(dir):
             raise
 
 
-class build_py(orig.build_py):
+_DEFAULT_RULE = Rule(fromdir="/_async/", todir="/_sync/")
+
+
+class _build_py(orig.build_py):
     """
     Subclass build_py from setuptools to modify its behavior.
 
@@ -214,8 +202,10 @@ class build_py(orig.build_py):
         return outfile, copied
 
 
-def customize_build_py(rules=(_DEFAULT_RULE,)):
-    class _build_py(build_py):
+def cmdclass_build_py(rules=(_DEFAULT_RULE,)):
+    """Creates a 'build_py' class for use within 'cmdclass={"build_py": ...}'"""
+
+    class _custom_build_py(_build_py):
         UNASYNC_RULES = rules
 
-    return _build_py
+    return _custom_build_py
