@@ -28,12 +28,16 @@ def list_files(startpath):
     return output
 
 
+def test_rule_on_short_path():
+    rule = unasync.Rule("/ahip/tests/", "/hip/tests/")
+    assert rule.match("/ahip/") is False
+
+
 @pytest.mark.parametrize("source_file", TEST_FILES)
 def test_unasync(tmpdir, source_file):
 
-    unasync.unasync_file(
-        os.path.join(ASYNC_DIR, source_file), fromdir=ASYNC_DIR, todir=str(tmpdir)
-    )
+    rule = unasync.Rule(fromdir=ASYNC_DIR, todir=str(tmpdir))
+    rule.unasync_file(os.path.join(ASYNC_DIR, source_file))
 
     encoding = "latin-1" if "encoding" in source_file else "utf-8"
     with io.open(os.path.join(SYNC_DIR, source_file), encoding=encoding) as f:
@@ -109,6 +113,10 @@ def test_project_structure_after_customized_build_py_packages(tmpdir):
     subprocess.check_call(["python", "setup.py", "build"], cwd=pkg_dir, env=env)
 
     _async_dir_tree = list_files(os.path.join(source_pkg_dir, "src/ahip/."))
-    unasynced_dir_tree = list_files(os.path.join(pkg_dir, "build/lib/hip/."))
+    unasynced_dir_path = os.path.join(pkg_dir, "build/lib/hip/.")
+    unasynced_dir_tree = list_files(unasynced_dir_path)
 
     assert _async_dir_tree == unasynced_dir_tree
+
+    with open(os.path.join(unasynced_dir_path, "tests/test_conn.py")) as f:
+        assert "import hip\n" in f.read()

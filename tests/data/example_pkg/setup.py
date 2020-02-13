@@ -10,6 +10,6 @@ setuptools.setup(
     description="A package used to test unasync",
     url="https://github.com/pypa/sampleproject",
     packages=["example_pkg", "example_pkg._async", "example_pkg._async.some_dir"],
-    cmdclass={"build_py": unasync.build_py},
+    cmdclass={"build_py": unasync.cmdclass_build_py()},
     package_dir={"": "src"},
 )
