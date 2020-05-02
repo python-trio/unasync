@@ -63,7 +63,7 @@ class Rule:
 
         return False
 
-    def unasync_file(self, filepath):
+    def _unasync_file(self, filepath):
         with open(filepath, "rb") as f:
             write_kwargs = {}
             if sys.version_info[0] >= 3:
@@ -120,7 +120,7 @@ def unasync_files(fpath_list, rules):
                 found_weight = weight
 
         if found_rule:
-            found_rule.unasync_file(f)
+            found_rule._unasync_file(f)
 
 
 Token = collections.namedtuple("Token", ["type", "string", "start", "end", "line"])
