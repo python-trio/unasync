@@ -17,7 +17,7 @@ setuptools.setup(
                 unasync.Rule(
                     fromdir="/ahip/tests/",
                     todir="/hip/tests/",
-                    replacements={"ahip": "hip"},
+                    additional_replacements={"ahip": "hip"},
                 ),
             ]
         )
