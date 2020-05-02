@@ -63,7 +63,7 @@ class Rule:
 
         return False
 
-    def _unasync_file(self, filepath):
+    def unasync_file(self, filepath):
         with open(filepath, "rb") as f:
             write_kwargs = {}
             if sys.version_info[0] >= 3:
@@ -190,7 +190,7 @@ class _build_py(orig.build_py):
                     found_weight = weight
 
             if found_rule:
-                found_rule._unasync_file(f)
+                found_rule.unasync_file(f)
 
         # Remaining base class code
         self.byte_compile(self.get_outputs(include_bytecode=0))
