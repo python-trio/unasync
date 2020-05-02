@@ -136,3 +136,15 @@ def test_project_structure_after_customized_build_py_packages(tmpdir):
 
     with open(os.path.join(unasynced_dir_path, "tests/test_conn.py")) as f:
         assert "import hip\n" in f.read()
+
+
+def test_makedirs(monkeypatch):
+    import errno
+
+    def raises(*args, **kwargs):
+        # Unexpected OSError
+        raise OSError(errno.EPERM, "Operation not permitted")
+
+    monkeypatch.setattr(os, "makedirs", raises)
+    with pytest.raises(OSError):
+        unasync._makedirs_existok("path")
