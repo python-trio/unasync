@@ -47,6 +47,22 @@ def test_unasync(tmpdir, source_file):
         assert unasynced_code == truth
 
 
+def test_unasync_files(tmpdir):
+    """Test the unasync_files API, not tied by a Rule or to setuptools."""
+    unasync.unasync_files(
+        [os.path.join(ASYNC_DIR, fpath) for fpath in TEST_FILES],
+        rules=[unasync.Rule(fromdir=ASYNC_DIR, todir=str(tmpdir))],
+    )
+
+    for source_file in TEST_FILES:
+        encoding = "latin-1" if "encoding" in source_file else "utf-8"
+        with io.open(os.path.join(SYNC_DIR, source_file), encoding=encoding) as f:
+            truth = f.read()
+        with io.open(os.path.join(str(tmpdir), source_file), encoding=encoding) as f:
+            unasynced_code = f.read()
+            assert unasynced_code == truth
+
+
 def test_build_py_modules(tmpdir):
 
     source_modules_dir = os.path.join(TEST_DIR, "example_mod")

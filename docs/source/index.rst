@@ -86,6 +86,23 @@ customized :code:`unasync.Rule` instances to :code:`unasync.cmdclass_build_py()`
         ...
     )
 
+---------------------------
+Usage outside of setuptools
+---------------------------
+
+You can also use unasync without setuptools, to run unasync on tests, for example.
+
+.. code-block:: python
+
+    import unasync
+
+    unasync.unasync_files(
+        [file1, file2, ...],
+        rules=[
+            unasync.Rule("tests/", "tests_sync/", replacements={"ahip": "hip"}),
+        ]
+    )
+
 
 .. toctree::
    :maxdepth: 2
