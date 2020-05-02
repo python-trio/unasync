@@ -14,6 +14,7 @@ from ._version import __version__  # NOQA
 
 __all__ = [
     "Rule",
+    "unasync_files",
     "cmdclass_build_py",
 ]
 
