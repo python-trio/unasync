@@ -30,14 +30,14 @@ def list_files(startpath):
 
 def test_rule_on_short_path():
     rule = unasync.Rule("/ahip/tests/", "/hip/tests/")
-    assert rule.match("/ahip/") is False
+    assert rule._match("/ahip/") is False
 
 
 @pytest.mark.parametrize("source_file", TEST_FILES)
 def test_unasync(tmpdir, source_file):
 
     rule = unasync.Rule(fromdir=ASYNC_DIR, todir=str(tmpdir))
-    rule.unasync_file(os.path.join(ASYNC_DIR, source_file))
+    rule._unasync_file(os.path.join(ASYNC_DIR, source_file))
 
     encoding = "latin-1" if "encoding" in source_file else "utf-8"
     with io.open(os.path.join(SYNC_DIR, source_file), encoding=encoding) as f:
