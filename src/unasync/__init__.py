@@ -46,7 +46,7 @@ class Rule:
         for key, val in (replacements or {}).items():
             self.token_replacements[key] = val
 
-    def match(self, filepath):
+    def _match(self, filepath):
         """Determines if a Rule matches a given filepath and if so
         returns a higher comparable value if the match is more specific.
         """
@@ -70,15 +70,15 @@ class Rule:
                 encoding, _ = std_tokenize.detect_encoding(f.readline)
                 write_kwargs["encoding"] = encoding
                 f.seek(0)
-            tokens = tokenize(f)
-            tokens = self.unasync_tokens(tokens)
-            result = untokenize(tokens)
+            tokens = _tokenize(f)
+            tokens = self._unasync_tokens(tokens)
+            result = _untokenize(tokens)
             outfilepath = filepath.replace(self.fromdir, self.todir)
-            makedirs_existok(os.path.dirname(outfilepath))
+            _makedirs_existok(os.path.dirname(outfilepath))
             with open(outfilepath, "w", **write_kwargs) as f:
                 print(result, file=f, end="")
 
-    def unasync_tokens(self, tokens):
+    def _unasync_tokens(self, tokens):
         # TODO __await__, ...?
         used_space = None
         for space, toknum, tokval in tokens:
@@ -90,16 +90,16 @@ class Rule:
                 used_space = space
             else:
                 if toknum == std_tokenize.NAME:
-                    tokval = self.unasync_name(tokval)
+                    tokval = self._unasync_name(tokval)
                 elif toknum == std_tokenize.STRING:
                     left_quote, name, right_quote = tokval[0], tokval[1:-1], tokval[-1]
-                    tokval = left_quote + self.unasync_name(name) + right_quote
+                    tokval = left_quote + self._unasync_name(name) + right_quote
                 if used_space is None:
                     used_space = space
                 yield (used_space, tokval)
                 used_space = None
 
-    def unasync_name(self, name):
+    def _unasync_name(self, name):
         if name in self.token_replacements:
             return self.token_replacements[name]
         # Convert classes prefixed with 'Async' into 'Sync'
@@ -111,7 +111,7 @@ class Rule:
 Token = collections.namedtuple("Token", ["type", "string", "start", "end", "line"])
 
 
-def get_tokens(f):
+def _get_tokens(f):
     if sys.version_info[0] == 2:
         for tok in std_tokenize.generate_tokens(f.readline):
             type_, string, start, end, line = tok
@@ -123,9 +123,9 @@ def get_tokens(f):
             yield tok
 
 
-def tokenize(f):
+def _tokenize(f):
     last_end = (1, 0)
-    for tok in get_tokens(f):
+    for tok in _get_tokens(f):
         if last_end[0] < tok.start[0]:
             yield ("", std_tokenize.STRING, " \\\n")
             last_end = (tok.start[0], 0)
@@ -141,11 +141,11 @@ def tokenize(f):
             last_end = (tok.end[0] + 1, 0)
 
 
-def untokenize(tokens):
+def _untokenize(tokens):
     return "".join(space + tokval for space, tokval in tokens)
 
 
-def makedirs_existok(dir):
+def _makedirs_existok(dir):
     try:
         os.makedirs(dir)
     except OSError as e:
@@ -184,7 +184,7 @@ class _build_py(orig.build_py):
             found_weight = None
 
             for rule in rules:
-                weight = rule.match(f)
+                weight = rule._match(f)
                 if weight and (found_weight is None or weight > found_weight):
                     found_rule = rule
                     found_weight = weight

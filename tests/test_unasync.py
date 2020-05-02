@@ -30,7 +30,7 @@ def list_files(startpath):
 
 def test_rule_on_short_path():
     rule = unasync.Rule("/ahip/tests/", "/hip/tests/")
-    assert rule.match("/ahip/") is False
+    assert rule._match("/ahip/") is False
 
 
 @pytest.mark.parametrize("source_file", TEST_FILES)
