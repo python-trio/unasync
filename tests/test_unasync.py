@@ -72,6 +72,8 @@ def test_build_py_modules(tmpdir):
     env = copy.copy(os.environ)
     env["PYTHONPATH"] = os.path.realpath(os.path.join(TEST_DIR, ".."))
     subprocess.check_call(["python", "setup.py", "build"], cwd=mod_dir, env=env)
+    # Calling it twice to test the "if not copied" branch
+    subprocess.check_call(["python", "setup.py", "build"], cwd=mod_dir, env=env)
 
     unasynced = os.path.join(mod_dir, "build/lib/_sync/some_file.py")
     tree_build_dir = list_files(mod_dir)
