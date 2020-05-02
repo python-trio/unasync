@@ -81,7 +81,7 @@ customized :code:`unasync.Rule` instances to :code:`unasync.cmdclass_build_py()`
             # This rule's 'fromdir' is more specific so will take precedent
             # over the above rule if the path is within /ahip/tests/...
             # This rule adds an additional token replacement over the default replacements.
-            unasync.Rule("/ahip/tests/", "/hip/tests/", replacements={"ahip": "hip"}),
+            unasync.Rule("/ahip/tests/", "/hip/tests/", additional_replacements={"ahip": "hip"}),
         ])},
         ...
     )
@@ -99,7 +99,7 @@ You can also use unasync without setuptools, to run unasync on tests, for exampl
     unasync.unasync_files(
         [file1, file2, ...],
         rules=[
-            unasync.Rule("tests/", "tests_sync/", replacements={"ahip": "hip"}),
+            unasync.Rule("tests/", "tests_sync/", additional_replacements={"ahip": "hip"}),
         ]
     )
 

@@ -37,13 +37,13 @@ _ASYNC_TO_SYNC = {
 class Rule:
     """A single set of rules for 'unasync'ing file(s)"""
 
-    def __init__(self, fromdir, todir, replacements=None):
+    def __init__(self, fromdir, todir, additional_replacements=None):
         self.fromdir = fromdir.replace("/", os.sep)
         self.todir = todir.replace("/", os.sep)
 
         # Add any additional user-defined token replacements to our list.
         self.token_replacements = _ASYNC_TO_SYNC.copy()
-        for key, val in (replacements or {}).items():
+        for key, val in (additional_replacements or {}).items():
             self.token_replacements[key] = val
 
     def _match(self, filepath):
