@@ -108,6 +108,21 @@ class Rule:
         return name
 
 
+def unasync_files(fpath_list, rules):
+    for f in fpath_list:
+        found_rule = None
+        found_weight = None
+
+        for rule in rules:
+            weight = rule._match(f)
+            if weight and (found_weight is None or weight > found_weight):
+                found_rule = rule
+                found_weight = weight
+
+        if found_rule:
+            found_rule.unasync_file(f)
+
+
 Token = collections.namedtuple("Token", ["type", "string", "start", "end", "line"])
 
 
@@ -179,18 +194,7 @@ class _build_py(orig.build_py):
             self.build_package_data()
 
         # Our modification!
-        for f in self._updated_files:
-            found_rule = None
-            found_weight = None
-
-            for rule in rules:
-                weight = rule._match(f)
-                if weight and (found_weight is None or weight > found_weight):
-                    found_rule = rule
-                    found_weight = weight
-
-            if found_rule:
-                found_rule.unasync_file(f)
+        unasync_files(self._updated_files, rules)
 
         # Remaining base class code
         self.byte_compile(self.get_outputs(include_bytecode=0))
