@@ -1,4 +1,5 @@
 import copy
+import errno
 import io
 import os
 import shutil
@@ -72,6 +73,8 @@ def test_build_py_modules(tmpdir):
     env = copy.copy(os.environ)
     env["PYTHONPATH"] = os.path.realpath(os.path.join(TEST_DIR, ".."))
     subprocess.check_call(["python", "setup.py", "build"], cwd=mod_dir, env=env)
+    # Calling it twice to test the "if not copied" branch
+    subprocess.check_call(["python", "setup.py", "build"], cwd=mod_dir, env=env)
 
     unasynced = os.path.join(mod_dir, "build/lib/_sync/some_file.py")
     tree_build_dir = list_files(mod_dir)
@@ -136,3 +139,13 @@ def test_project_structure_after_customized_build_py_packages(tmpdir):
 
     with open(os.path.join(unasynced_dir_path, "tests/test_conn.py")) as f:
         assert "import hip\n" in f.read()
+
+
+def test_makedirs_existok(monkeypatch):
+    def raises(*args, **kwargs):
+        # Unexpected OSError
+        raise OSError(errno.EPERM, "Operation not permitted")
+
+    monkeypatch.setattr(os, "makedirs", raises)
+    with pytest.raises(OSError):
+        unasync._makedirs_existok("path")
