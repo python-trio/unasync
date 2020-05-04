@@ -1,4 +1,5 @@
 import copy
+import errno
 import io
 import os
 import shutil
@@ -140,9 +141,7 @@ def test_project_structure_after_customized_build_py_packages(tmpdir):
         assert "import hip\n" in f.read()
 
 
-def test_makedirs(monkeypatch):
-    import errno
-
+def test_makedirs_existok(monkeypatch):
     def raises(*args, **kwargs):
         # Unexpected OSError
         raise OSError(errno.EPERM, "Operation not permitted")
