@@ -149,7 +149,7 @@ def _tokenize(f):
         space = ""
         if tok.start > last_end:
             assert tok.start[0] == last_end[0]
-            space = " " * (tok.start[1] - last_end[1])
+            space = tok.line[last_end[1] : tok.start[1]]
         yield (space, tok.type, tok.string)
 
         last_end = tok.end
