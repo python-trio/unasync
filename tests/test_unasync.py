@@ -2,6 +2,11 @@ import copy
 import errno
 import io
 import os
+
+try:
+    import pathlib
+except ImportError:
+    import pathlib2 as pathlib
 import shutil
 import subprocess
 import sys
@@ -41,6 +46,12 @@ def list_files(startpath):
 def test_rule_on_short_path():
     rule = unasync.Rule("/ahip/tests/", "/hip/tests/")
     assert rule._match("/ahip/") is False
+
+
+def test_rule_with_pathlib_path():
+    path_async_base = pathlib.Path("/ahip")
+    path_sync_base = pathlib.Path("/hip")
+    unasync.Rule(path_async_base / "tests", path_sync_base / "tests")
 
 
 @pytest.mark.parametrize("source_file", TEST_FILES)

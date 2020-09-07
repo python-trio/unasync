@@ -52,13 +52,18 @@ else:  # PY3
 
     StringIO = io.StringIO
 
+if hasattr(os, "fspath"):  # PY3
+    fspath = os.fspath
+else:  # PY2
+    fspath = str
+
 
 class Rule:
     """A single set of rules for 'unasync'ing file(s)"""
 
     def __init__(self, fromdir, todir, additional_replacements=None):
-        self.fromdir = fromdir.replace("/", os.sep)
-        self.todir = todir.replace("/", os.sep)
+        self.fromdir = fspath(fromdir).replace("/", os.sep)
+        self.todir = fspath(todir).replace("/", os.sep)
 
         # Add any additional user-defined token replacements to our list.
         self.token_replacements = _ASYNC_TO_SYNC.copy()
@@ -69,6 +74,8 @@ class Rule:
         """Determines if a Rule matches a given filepath and if so
         returns a higher comparable value if the match is more specific.
         """
+        filepath = fspath(filepath)
+
         file_segments = [x for x in filepath.split(os.sep) if x]
         from_segments = [x for x in self.fromdir.split(os.sep) if x]
         len_from_segments = len(from_segments)
@@ -83,6 +90,7 @@ class Rule:
         return False
 
     def _unasync_file(self, filepath):
+        filepath = fspath(filepath)
         with open(filepath, "rb") as f:
             write_kwargs = {}
             if sys.version_info[0] >= 3:  # PY3  # pragma: no branch
