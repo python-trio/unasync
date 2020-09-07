@@ -100,7 +100,57 @@ class Rule:
     def _unasync_tokens(self, tokens):
         # TODO __await__, ...?
         used_space = None
+        context = None  # Can be `None`, `"func_decl"`, `"func_name"`, `"arg_list"`, `"arg_list_end"`, `"return_type"`
+        brace_depth = 0
+        typing_ctx = False
+
         for space, toknum, tokval in tokens:
+            # Update context state tracker
+            if context is None and toknum == std_tokenize.NAME and tokval == "def":
+                context = "func_decl"
+            elif context == "func_decl" and toknum == std_tokenize.NAME:
+                context = "func_name"
+            elif context == "func_name" and toknum == std_tokenize.OP and tokval == "(":
+                context = "arg_list"
+            elif context == "arg_list":
+                if toknum == std_tokenize.OP and tokval in ("(", "["):
+                    brace_depth += 1
+                elif (
+                    toknum == std_tokenize.OP
+                    and tokval in (")", "]")
+                    and brace_depth >= 1
+                ):
+                    brace_depth -= 1
+                elif toknum == std_tokenize.OP and tokval == ")":
+                    context = "arg_list_end"
+                elif toknum == std_tokenize.OP and tokval == ":" and brace_depth < 1:
+                    typing_ctx = True
+                elif toknum == std_tokenize.OP and tokval == "," and brace_depth < 1:
+                    typing_ctx = False
+            elif (
+                context == "arg_list_end"
+                and toknum == std_tokenize.OP
+                and tokval == "->"
+            ):
+                context = "return_type"
+                typing_ctx = True
+            elif context == "return_type":
+                if toknum == std_tokenize.OP and tokval in ("(", "["):
+                    brace_depth += 1
+                elif (
+                    toknum == std_tokenize.OP
+                    and tokval in (")", "]")
+                    and brace_depth >= 1
+                ):
+                    brace_depth -= 1
+                elif toknum == std_tokenize.OP and tokval == ":":
+                    context = None
+                    typing_ctx = False
+            else:  # Something unexpected happend - reset state
+                context = None
+                brace_depth = 0
+                typing_ctx = False
+
             if tokval in ["async", "await"]:
                 # When removing async or await, we want to use the whitespace that
                 # was before async/await before the next token so that
@@ -111,8 +161,34 @@ class Rule:
                 if toknum == std_tokenize.NAME:
                     tokval = self._unasync_name(tokval)
                 elif toknum == std_tokenize.STRING:
-                    left_quote, name, right_quote = tokval[0], tokval[1:-1], tokval[-1]
-                    tokval = left_quote + self._unasync_name(name) + right_quote
+                    # Strings in typing context are forward-references and should be unasyncified
+                    quote = ""
+                    prefix = ""
+                    while ord(tokval[0]) in range(ord("a"), ord("z") + 1):
+                        prefix += tokval[0]
+                        tokval = tokval[1:]
+
+                    if tokval.startswith('"""') and tokval.endswith('"""'):
+                        quote = '"""'  # Broken syntax highlighters workaround: """
+                    elif tokval.startswith("'''") and tokval.endswith("'''"):
+                        quote = "'''"  # Broken syntax highlighters wokraround: '''
+                    elif tokval.startswith('"') and tokval.endswith('"'):
+                        quote = '"'
+                    elif tokval.startswith(  # pragma: no branch
+                        "'"
+                    ) and tokval.endswith("'"):
+                        quote = "'"
+                    assert (
+                        len(quote) > 0
+                    ), "Quoting style of string {0!r} unknown".format(tokval)
+                    stringval = tokval[len(quote) : -len(quote)]
+                    if typing_ctx:
+                        stringval = _untokenize(
+                            self._unasync_tokens(_tokenize(StringIO(stringval)))
+                        )
+                    else:
+                        stringval = self._unasync_name(stringval)
+                    tokval = prefix + quote + stringval + quote
                 elif toknum == std_tokenize.COMMENT and tokval.startswith(
                     _TYPE_COMMENT_PREFIX
                 ):
@@ -193,7 +269,7 @@ def _tokenize(f):
             # Somehow Python 3.5 and below produce the ENDMARKER in a way that
             # causes superfluous continuation lines to be generated
             if tok.type != std_tokenize.ENDMARKER:
-                yield ("", std_tokenize.STRING, " \\\n")
+                yield (" ", std_tokenize.NEWLINE, "\\\n")
             last_end = (tok.start[0], 0)
 
         space = ""

@@ -15,6 +15,9 @@ ASYNC_DIR = os.path.join(TEST_DIR, "async")
 SYNC_DIR = os.path.join(TEST_DIR, "sync")
 TEST_FILES = sorted([f for f in os.listdir(ASYNC_DIR) if f.endswith(".py")])
 
+if sys.version_info[0] == 2:
+    TEST_FILES.remove("typing_py3.py")
+
 
 def list_files(startpath):
     output = ""
