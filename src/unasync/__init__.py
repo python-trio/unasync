@@ -1,9 +1,11 @@
+# -*- encoding: utf8 -*-
 """Top-level package for unasync."""
 
 from __future__ import print_function
 
 import collections
 import errno
+import io
 import os
 import sys
 import tokenize as std_tokenize
@@ -33,6 +35,22 @@ _ASYNC_TO_SYNC = {
     # code in Python 3.7+
     "StopAsyncIteration": "StopIteration",
 }
+
+_TYPE_COMMENT_PREFIX = "# type: "
+
+
+if sys.version_info[0] == 2:  # PY2
+
+    def isidentifier(s):
+        return all([c.isalnum() or c == "_" for c in s])
+
+    StringIO = io.BytesIO
+else:  # PY3
+
+    def isidentifier(s):
+        return s.isidentifier()
+
+    StringIO = io.StringIO
 
 
 class Rule:
@@ -95,6 +113,31 @@ class Rule:
                 elif toknum == std_tokenize.STRING:
                     left_quote, name, right_quote = tokval[0], tokval[1:-1], tokval[-1]
                     tokval = left_quote + self._unasync_name(name) + right_quote
+                elif toknum == std_tokenize.COMMENT and tokval.startswith(
+                    _TYPE_COMMENT_PREFIX
+                ):
+                    type_decl, suffix = tokval[len(_TYPE_COMMENT_PREFIX) :], ""
+                    if "#" in type_decl:
+                        type_decl, suffix = type_decl.split("#", 1)
+                        suffix = "#" + suffix
+                    type_decl_stripped = type_decl.strip()
+
+                    # Do not process `type: ignore` or `type: ignore[…]` as these aren't actual identifiers
+                    is_type_ignore = type_decl_stripped == "ignore"
+                    is_type_ignore |= type_decl_stripped.startswith(
+                        "ignore"
+                    ) and not isidentifier(type_decl_stripped[0:7])
+                    if not is_type_ignore:
+                        # Preserve trailing whitespace since the tokenizer won't
+                        trailing_space_len = len(type_decl) - len(type_decl.rstrip())
+                        if trailing_space_len > 0:
+                            suffix = type_decl[-trailing_space_len:] + suffix
+                            type_decl = type_decl[:-trailing_space_len]
+                        type_decl = _untokenize(
+                            self._unasync_tokens(_tokenize(StringIO(type_decl)))
+                        )
+
+                    tokval = _TYPE_COMMENT_PREFIX + type_decl + suffix
                 if used_space is None:
                     used_space = space
                 yield (used_space, tokval)
@@ -133,7 +176,11 @@ def _get_tokens(f):
             type_, string, start, end, line = tok
             yield Token(type_, string, start, end, line)
     else:  # PY3
-        for tok in std_tokenize.tokenize(f.readline):
+        if isinstance(f, io.TextIOBase):
+            gen = std_tokenize.generate_tokens(f.readline)
+        else:
+            gen = std_tokenize.tokenize(f.readline)
+        for tok in gen:
             if tok.type == std_tokenize.ENCODING:
                 continue
             yield tok
@@ -143,7 +190,10 @@ def _tokenize(f):
     last_end = (1, 0)
     for tok in _get_tokens(f):
         if last_end[0] < tok.start[0]:
-            yield ("", std_tokenize.STRING, " \\\n")
+            # Somehow Python 3.5 and below produce the ENDMARKER in a way that
+            # causes superfluous continuation lines to be generated
+            if tok.type != std_tokenize.ENDMARKER:
+                yield ("", std_tokenize.STRING, " \\\n")
             last_end = (tok.start[0], 0)
 
         space = ""
