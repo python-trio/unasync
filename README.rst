@@ -22,8 +22,15 @@ unasync
 
 Welcome to `unasync <https://pypi.org/project/unasync/>`_, a project that can transform your asynchronous code into synchronous code.
 
-*Why are we doing it?* - `urllib3/urllib3#1335 <https://github.com/urllib3/urllib3/pull/1335/>`_
+See https://github.com/urllib3/urllib3/issues/1323 for more details about unasync.
 
+Users
+=====
+
+ * The official Elasticsearch Python client: https://github.com/elastic/elasticsearch-py
+ * Hip, a HTTP client: https://github.com/python-trio/hip
+ * httpcore, another low-level HTTP client uses a different implementation of the same idea: https://github.com/encode/httpcore
+ 
 Installation
 ============
 
