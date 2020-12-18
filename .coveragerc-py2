@@ -7,4 +7,4 @@ precision = 1
 exclude_lines =
   pragma: no cover
   abc.abstractmethod
-  \# PY2
+  \# PY3

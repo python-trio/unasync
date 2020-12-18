@@ -67,7 +67,7 @@ class Rule:
     def _unasync_file(self, filepath):
         with open(filepath, "rb") as f:
             write_kwargs = {}
-            if sys.version_info[0] >= 3:
+            if sys.version_info[0] >= 3:  # PY3  # pragma: no branch
                 encoding, _ = std_tokenize.detect_encoding(f.readline)
                 write_kwargs["encoding"] = encoding
                 f.seek(0)
@@ -128,11 +128,11 @@ Token = collections.namedtuple("Token", ["type", "string", "start", "end", "line
 
 
 def _get_tokens(f):
-    if sys.version_info[0] == 2:
+    if sys.version_info[0] == 2:  # PY2
         for tok in std_tokenize.generate_tokens(f.readline):
             type_, string, start, end, line = tok
             yield Token(type_, string, start, end, line)
-    else:
+    else:  # PY3
         for tok in std_tokenize.tokenize(f.readline):
             if tok.type == std_tokenize.ENCODING:
                 continue
