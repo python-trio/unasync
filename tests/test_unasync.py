@@ -19,6 +19,11 @@ TEST_FILES = sorted([f for f in os.listdir(ASYNC_DIR) if f.endswith(".py")])
 def list_files(startpath):
     output = ""
     for root, dirs, files in os.walk(startpath):
+        # Ensure that we do not capture the directory inode order on
+        # platforms that don't pre-sort `readdir` results
+        dirs.sort()
+        files.sort()
+
         level = root.replace(startpath, "").count(os.sep)
         indent = " " * 4 * (level)
         output += "{}{}/".format(indent, os.path.basename(root))
