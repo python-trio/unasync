@@ -2,6 +2,9 @@
 branch=True
 source=unasync
 
+[paths]
+source = src/unasync
+
 [report]
 precision = 1
 exclude_lines =
