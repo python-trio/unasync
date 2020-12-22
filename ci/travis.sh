@@ -51,6 +51,16 @@ if [ "$USE_PYPY_RELEASE_VERSION" != "" ]; then
     source testenv/bin/activate
 fi
 
+case "${MACPYTHON:-${TRAVIS_PYTHON_VERSION:-}}" in
+	2*)
+		COVERAGE_FILE=.coveragerc-py2
+	;;
+
+	*)
+		COVERAGE_FILE=.coveragerc
+	;;
+esac
+
 pip install -U pip setuptools wheel
 
 if [ "$CHECK_FORMATTING" = "1" ]; then
@@ -91,7 +101,7 @@ else
     mkdir empty
     cd empty
 
-    pytest -ra -v --cov=unasync --cov-config=../.coveragerc --verbose ../tests
+    pytest -ra -v --cov=unasync --cov-config="../${COVERAGE_FILE}" --verbose ../tests
 
     bash <(curl -s https://codecov.io/bash)
 fi

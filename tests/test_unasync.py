@@ -2,8 +2,14 @@ import copy
 import errno
 import io
 import os
+
+try:
+    import pathlib
+except ImportError:
+    import pathlib2 as pathlib
 import shutil
 import subprocess
+import sys
 
 import pytest
 
@@ -14,10 +20,18 @@ ASYNC_DIR = os.path.join(TEST_DIR, "async")
 SYNC_DIR = os.path.join(TEST_DIR, "sync")
 TEST_FILES = sorted([f for f in os.listdir(ASYNC_DIR) if f.endswith(".py")])
 
+if sys.version_info[0] == 2:
+    TEST_FILES.remove("typing_py3.py")
+
 
 def list_files(startpath):
     output = ""
     for root, dirs, files in os.walk(startpath):
+        # Ensure that we do not capture the directory inode order on
+        # platforms that don't pre-sort `readdir` results
+        dirs.sort()
+        files.sort()
+
         level = root.replace(startpath, "").count(os.sep)
         indent = " " * 4 * (level)
         output += "{}{}/".format(indent, os.path.basename(root))
@@ -32,6 +46,12 @@ def list_files(startpath):
 def test_rule_on_short_path():
     rule = unasync.Rule("/ahip/tests/", "/hip/tests/")
     assert rule._match("/ahip/") is False
+
+
+def test_rule_with_pathlib_path():
+    path_async_base = pathlib.Path("/ahip")
+    path_sync_base = pathlib.Path("/hip")
+    unasync.Rule(path_async_base / "tests", path_sync_base / "tests")
 
 
 @pytest.mark.parametrize("source_file", TEST_FILES)
@@ -72,9 +92,9 @@ def test_build_py_modules(tmpdir):
 
     env = copy.copy(os.environ)
     env["PYTHONPATH"] = os.path.realpath(os.path.join(TEST_DIR, ".."))
-    subprocess.check_call(["python", "setup.py", "build"], cwd=mod_dir, env=env)
+    subprocess.check_call([sys.executable, "setup.py", "build"], cwd=mod_dir, env=env)
     # Calling it twice to test the "if not copied" branch
-    subprocess.check_call(["python", "setup.py", "build"], cwd=mod_dir, env=env)
+    subprocess.check_call([sys.executable, "setup.py", "build"], cwd=mod_dir, env=env)
 
     unasynced = os.path.join(mod_dir, "build/lib/_sync/some_file.py")
     tree_build_dir = list_files(mod_dir)
@@ -92,7 +112,7 @@ def test_build_py_packages(tmpdir):
 
     env = copy.copy(os.environ)
     env["PYTHONPATH"] = os.path.realpath(os.path.join(TEST_DIR, ".."))
-    subprocess.check_call(["python", "setup.py", "build"], cwd=pkg_dir, env=env)
+    subprocess.check_call([sys.executable, "setup.py", "build"], cwd=pkg_dir, env=env)
 
     unasynced = os.path.join(pkg_dir, "build/lib/example_pkg/_sync/__init__.py")
 
@@ -109,7 +129,7 @@ def test_project_structure_after_build_py_packages(tmpdir):
 
     env = copy.copy(os.environ)
     env["PYTHONPATH"] = os.path.realpath(os.path.join(TEST_DIR, ".."))
-    subprocess.check_call(["python", "setup.py", "build"], cwd=pkg_dir, env=env)
+    subprocess.check_call([sys.executable, "setup.py", "build"], cwd=pkg_dir, env=env)
 
     _async_dir_tree = list_files(
         os.path.join(source_pkg_dir, "src/example_pkg/_async/.")
@@ -129,7 +149,7 @@ def test_project_structure_after_customized_build_py_packages(tmpdir):
 
     env = copy.copy(os.environ)
     env["PYTHONPATH"] = os.path.realpath(os.path.join(TEST_DIR, ".."))
-    subprocess.check_call(["python", "setup.py", "build"], cwd=pkg_dir, env=env)
+    subprocess.check_call([sys.executable, "setup.py", "build"], cwd=pkg_dir, env=env)
 
     _async_dir_tree = list_files(os.path.join(source_pkg_dir, "src/ahip/."))
     unasynced_dir_path = os.path.join(pkg_dir, "build/lib/hip/.")
