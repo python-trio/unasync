@@ -11,7 +11,7 @@ import unasync
 TEST_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "data")
 ASYNC_DIR = os.path.join(TEST_DIR, "async")
 SYNC_DIR = os.path.join(TEST_DIR, "sync")
-TEST_FILES = sorted([f for f in os.listdir(ASYNC_DIR) if f.endswith(".py")])
+TEST_FILES = sorted(f for f in os.listdir(ASYNC_DIR) if f.endswith(".py"))
 
 
 def list_files(startpath):
@@ -19,11 +19,11 @@ def list_files(startpath):
     for root, dirs, files in os.walk(startpath):
         level = root.replace(startpath, "").count(os.sep)
         indent = " " * 4 * (level)
-        output += "{}{}/".format(indent, os.path.basename(root))
+        output += f"{indent}{os.path.basename(root)}/"
         output += "\n"
         subindent = " " * 4 * (level + 1)
         for f in files:
-            output += "{}{}".format(subindent, f)
+            output += f"{subindent}{f}"
             output += "\n"
     return output
 
