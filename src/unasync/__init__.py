@@ -71,8 +71,8 @@ class Rule:
             result = _untokenize(tokens)
             outfilepath = filepath.replace(self.fromdir, self.todir)
             os.makedirs(os.path.dirname(outfilepath), exist_ok=True)
-            with open(outfilepath, "w", encoding=encoding) as f:
-                print(result, file=f, end="")
+            with open(outfilepath, "wb") as f:
+                f.write(result.encode(encoding))
 
     def _unasync_tokens(self, tokens):
         # TODO __await__, ...?
