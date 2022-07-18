@@ -1,6 +1,5 @@
 import copy
 import errno
-import io
 import os
 import shutil
 import subprocess
@@ -12,7 +11,7 @@ import unasync
 TEST_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "data")
 ASYNC_DIR = os.path.join(TEST_DIR, "async")
 SYNC_DIR = os.path.join(TEST_DIR, "sync")
-TEST_FILES = sorted([f for f in os.listdir(ASYNC_DIR) if f.endswith(".py")])
+TEST_FILES = sorted(f for f in os.listdir(ASYNC_DIR) if f.endswith(".py"))
 
 
 def list_files(startpath):
@@ -20,11 +19,11 @@ def list_files(startpath):
     for root, dirs, files in os.walk(startpath):
         level = root.replace(startpath, "").count(os.sep)
         indent = " " * 4 * (level)
-        output += "{}{}/".format(indent, os.path.basename(root))
+        output += f"{indent}{os.path.basename(root)}/"
         output += "\n"
         subindent = " " * 4 * (level + 1)
         for f in files:
-            output += "{}{}".format(subindent, f)
+            output += f"{subindent}{f}"
             output += "\n"
     return output
 
@@ -41,9 +40,9 @@ def test_unasync(tmpdir, source_file):
     rule._unasync_file(os.path.join(ASYNC_DIR, source_file))
 
     encoding = "latin-1" if "encoding" in source_file else "utf-8"
-    with io.open(os.path.join(SYNC_DIR, source_file), encoding=encoding) as f:
+    with open(os.path.join(SYNC_DIR, source_file), encoding=encoding) as f:
         truth = f.read()
-    with io.open(os.path.join(str(tmpdir), source_file), encoding=encoding) as f:
+    with open(os.path.join(str(tmpdir), source_file), encoding=encoding) as f:
         unasynced_code = f.read()
         assert unasynced_code == truth
 
@@ -57,9 +56,9 @@ def test_unasync_files(tmpdir):
 
     for source_file in TEST_FILES:
         encoding = "latin-1" if "encoding" in source_file else "utf-8"
-        with io.open(os.path.join(SYNC_DIR, source_file), encoding=encoding) as f:
+        with open(os.path.join(SYNC_DIR, source_file), encoding=encoding) as f:
             truth = f.read()
-        with io.open(os.path.join(str(tmpdir), source_file), encoding=encoding) as f:
+        with open(os.path.join(str(tmpdir), source_file), encoding=encoding) as f:
             unasynced_code = f.read()
             assert unasynced_code == truth
 
@@ -139,13 +138,3 @@ def test_project_structure_after_customized_build_py_packages(tmpdir):
 
     with open(os.path.join(unasynced_dir_path, "tests/test_conn.py")) as f:
         assert "import hip\n" in f.read()
-
-
-def test_makedirs_existok(monkeypatch):
-    def raises(*args, **kwargs):
-        # Unexpected OSError
-        raise OSError(errno.EPERM, "Operation not permitted")
-
-    monkeypatch.setattr(os, "makedirs", raises)
-    with pytest.raises(OSError):
-        unasync._makedirs_existok("path")

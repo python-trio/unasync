@@ -1,7 +1,5 @@
 """Top-level package for unasync."""
 
-from __future__ import print_function
-
 import collections
 import errno
 import os
@@ -66,18 +64,15 @@ class Rule:
 
     def _unasync_file(self, filepath):
         with open(filepath, "rb") as f:
-            write_kwargs = {}
-            if sys.version_info[0] >= 3:
-                encoding, _ = std_tokenize.detect_encoding(f.readline)
-                write_kwargs["encoding"] = encoding
-                f.seek(0)
+            encoding, _ = std_tokenize.detect_encoding(f.readline)
+            f.seek(0)
             tokens = _tokenize(f)
             tokens = self._unasync_tokens(tokens)
             result = _untokenize(tokens)
             outfilepath = filepath.replace(self.fromdir, self.todir)
-            _makedirs_existok(os.path.dirname(outfilepath))
-            with open(outfilepath, "w", **write_kwargs) as f:
-                print(result, file=f, end="")
+            os.makedirs(os.path.dirname(outfilepath), exist_ok=True)
+            with open(outfilepath, "wb") as f:
+                f.write(result.encode(encoding))
 
     def _unasync_tokens(self, tokens):
         # TODO __await__, ...?
@@ -127,21 +122,12 @@ def unasync_files(fpath_list, rules):
 Token = collections.namedtuple("Token", ["type", "string", "start", "end", "line"])
 
 
-def _get_tokens(f):
-    if sys.version_info[0] == 2:
-        for tok in std_tokenize.generate_tokens(f.readline):
-            type_, string, start, end, line = tok
-            yield Token(type_, string, start, end, line)
-    else:
-        for tok in std_tokenize.tokenize(f.readline):
-            if tok.type == std_tokenize.ENCODING:
-                continue
-            yield tok
-
-
 def _tokenize(f):
     last_end = (1, 0)
-    for tok in _get_tokens(f):
+    for tok in std_tokenize.tokenize(f.readline):
+        if tok.type == std_tokenize.ENCODING:
+            continue
+
         if last_end[0] < tok.start[0]:
             yield ("", std_tokenize.STRING, " \\\n")
             last_end = (tok.start[0], 0)
@@ -159,14 +145,6 @@ def _tokenize(f):
 
 def _untokenize(tokens):
     return "".join(space + tokval for space, tokval in tokens)
-
-
-def _makedirs_existok(dir):
-    try:
-        os.makedirs(dir)
-    except OSError as e:
-        if e.errno != errno.EEXIST:
-            raise
 
 
 _DEFAULT_RULE = Rule(fromdir="/_async/", todir="/_sync/")
@@ -201,7 +179,7 @@ class _build_py(orig.build_py):
         self.byte_compile(self.get_outputs(include_bytecode=0))
 
     def build_module(self, module, module_file, package):
-        outfile, copied = orig.build_py.build_module(self, module, module_file, package)
+        outfile, copied = super().build_module(module, module_file, package)
         if copied:
             self._updated_files.append(outfile)
         return outfile, copied
