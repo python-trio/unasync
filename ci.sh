@@ -4,7 +4,7 @@ set -ex
 
 BLACK_VERSION=22.6.0
 
-pip install -U pip setuptools wheel
+python -m pip install -U pip setuptools wheel
 
 python setup.py sdist --formats=zip
 pip install dist/*.zip
