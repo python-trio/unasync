@@ -17,7 +17,7 @@ setup(
     include_package_data=True,
     packages=find_packages("src"),
     package_dir={"": "src"},
-    install_requires=["tokenize_rt==4.2.1"],
+    install_requires=["tokenize_rt"],
     keywords=["async"],
     python_requires=">=3.7",
     classifiers=[
