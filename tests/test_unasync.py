@@ -3,6 +3,7 @@ import errno
 import os
 import shutil
 import subprocess
+import sys
 
 import pytest
 
@@ -69,9 +70,9 @@ def test_build_py_modules(tmpdir):
 
     env = copy.copy(os.environ)
     env["PYTHONPATH"] = os.path.realpath(os.path.join(TEST_DIR, ".."))
-    subprocess.check_call(["python", "setup.py", "build"], cwd=mod_dir, env=env)
+    subprocess.check_call([sys.executable, "setup.py", "build"], cwd=mod_dir, env=env)
     # Calling it twice to test the "if not copied" branch
-    subprocess.check_call(["python", "setup.py", "build"], cwd=mod_dir, env=env)
+    subprocess.check_call([sys.executable, "setup.py", "build"], cwd=mod_dir, env=env)
 
     unasynced = os.path.join(mod_dir, "build/lib/_sync/some_file.py")
     tree_build_dir = list_files(mod_dir)
@@ -88,7 +89,7 @@ def test_build_py_packages(tmpdir):
 
     env = copy.copy(os.environ)
     env["PYTHONPATH"] = os.path.realpath(os.path.join(TEST_DIR, ".."))
-    subprocess.check_call(["python", "setup.py", "build"], cwd=pkg_dir, env=env)
+    subprocess.check_call([sys.executable, "setup.py", "build"], cwd=pkg_dir, env=env)
 
     unasynced = os.path.join(pkg_dir, "build/lib/example_pkg/_sync/__init__.py")
 
@@ -104,7 +105,7 @@ def test_project_structure_after_build_py_packages(tmpdir):
 
     env = copy.copy(os.environ)
     env["PYTHONPATH"] = os.path.realpath(os.path.join(TEST_DIR, ".."))
-    subprocess.check_call(["python", "setup.py", "build"], cwd=pkg_dir, env=env)
+    subprocess.check_call([sys.executable, "setup.py", "build"], cwd=pkg_dir, env=env)
 
     _async_dir_tree = list_files(
         os.path.join(source_pkg_dir, "src/example_pkg/_async/.")
@@ -123,7 +124,7 @@ def test_project_structure_after_customized_build_py_packages(tmpdir):
 
     env = copy.copy(os.environ)
     env["PYTHONPATH"] = os.path.realpath(os.path.join(TEST_DIR, ".."))
-    subprocess.check_call(["python", "setup.py", "build"], cwd=pkg_dir, env=env)
+    subprocess.check_call([sys.executable, "setup.py", "build"], cwd=pkg_dir, env=env)
 
     _async_dir_tree = list_files(os.path.join(source_pkg_dir, "src/ahip/."))
     unasynced_dir_path = os.path.join(pkg_dir, "build/lib/hip/.")
