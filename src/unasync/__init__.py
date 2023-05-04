@@ -83,15 +83,19 @@ class Rule:
         comment_lines_locations = []
         for token in tokens:
             # find line numbers where "unasync: remove" comments are found
-            if token.name == 'COMMENT' and 'unasync: remove' in token.src:  # XXX: maybe make this a little more strict
+            if (
+                token.name == "COMMENT" and "unasync: remove" in token.src
+            ):  # XXX: maybe make this a little more strict
                 comment_lines_locations.append(token.line)
 
         lines_to_remove = set()
-        if comment_lines_locations:  # only parse ast if we actually have "unasync: remove" comments
+        if (
+            comment_lines_locations
+        ):  # only parse ast if we actually have "unasync: remove" comments
             tree = ast.parse(contents, filename=filename)
             for node in ast.walk(tree):
                 # find nodes whose line number (start line) intersect with unasync: remove comments
-                if hasattr(node, 'lineno') and node.lineno in comment_lines_locations:
+                if hasattr(node, "lineno") and node.lineno in comment_lines_locations:
                     for lineno in range(node.lineno, node.end_lineno + 1):
                         # find all lines related to each node and mark those lines for removal
                         lines_to_remove.add(lineno)

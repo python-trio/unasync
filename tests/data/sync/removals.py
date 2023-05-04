@@ -1,3 +1,5 @@
+# isort: skip_file
+# fmt: off
 from common import (
 a, b , c  # these should stick around
 )
@@ -21,3 +23,4 @@ class Foo:
     def another_method(self):
         print('This line should stick around')
 
+# fmt: on

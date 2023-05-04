@@ -1,3 +1,5 @@
+# isort: skip_file
+# fmt: off
 from common import (
 a, b , c  # these should stick around
 )
@@ -34,3 +36,4 @@ class Foo:
         print('This line should stick around')
         await self.something("the content in this line should be removed")  # unasync: remove
 
+# fmt: on
