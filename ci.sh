@@ -55,6 +55,4 @@ fi
 # Actual tests
 pip install -Ur test-requirements.txt
 
-pytest -W error -ra -v tests --cov --cov-config=.coveragerc
-
-bash <(curl -s https://codecov.io/bash)
+pytest -W error -ra -v tests --cov --cov-config=.coveragerc --cov-fail-under=93
