@@ -19,7 +19,7 @@ setup(
     package_dir={"": "src"},
     install_requires=["tokenize_rt", "setuptools"],
     keywords=["async"],
-    python_requires=">=3.7",
+    python_requires=">=3.8",
     classifiers=[
         "License :: OSI Approved :: MIT License",
         "License :: OSI Approved :: Apache Software License",
