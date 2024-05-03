@@ -67,7 +67,7 @@ class Rule:
         with open(filepath, "rb") as f:
             encoding, _ = std_tokenize.detect_encoding(f.readline)
 
-        with open(filepath, "rt", encoding=encoding) as f:
+        with open(filepath, encoding=encoding) as f:
             tokens = tokenize_rt.src_to_tokens(f.read())
             tokens = self._unasync_tokens(tokens)
             result = tokenize_rt.tokens_to_src(tokens)
