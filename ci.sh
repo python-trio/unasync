@@ -2,7 +2,7 @@
 
 set -ex
 
-BLACK_VERSION=22.6.0
+BLACK_VERSION=24.4.2
 
 python -m pip install -U pip setuptools wheel
 
