@@ -2,7 +2,7 @@
 
 set -ex
 
-BLACK_VERSION=22.6.0
+BLACK_VERSION=24.4.2
 
 python -m pip install -U pip setuptools wheel
 
@@ -55,6 +55,4 @@ fi
 # Actual tests
 pip install -Ur test-requirements.txt
 
-pytest -W error -ra -v tests --cov --cov-config=.coveragerc
-
-bash <(curl -s https://codecov.io/bash)
+pytest -W error -ra -v tests --cov --cov-config=.coveragerc --cov-fail-under=93
