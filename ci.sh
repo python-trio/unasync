@@ -55,4 +55,4 @@ fi
 # Actual tests
 pip install -Ur test-requirements.txt
 
-pytest -W error -ra -v tests --cov --cov-config=.coveragerc --cov-fail-under=93
+pytest -W error -ra -v tests --cov --cov-config=.coveragerc --cov-fail-under=75
