@@ -1,5 +1,6 @@
 """Top-level package for unasync."""
 
+import ast
 import collections
 import errno
 import os
@@ -67,18 +68,42 @@ class Rule:
         with open(filepath, "rb") as f:
             encoding, _ = std_tokenize.detect_encoding(f.readline)
 
-        with open(filepath, encoding=encoding) as f:
-            tokens = tokenize_rt.src_to_tokens(f.read())
-            tokens = self._unasync_tokens(tokens)
-            result = tokenize_rt.tokens_to_src(tokens)
-            outfilepath = filepath.replace(self.fromdir, self.todir)
-            os.makedirs(os.path.dirname(outfilepath), exist_ok=True)
-            with open(outfilepath, "wb") as f:
-                f.write(result.encode(encoding))
+        with open(filepath, "rt", encoding=encoding) as f:
+            contents = f.read()
+        tokens = self._unasync_tokenize(contents=contents, filename=filepath)
+        result = tokenize_rt.tokens_to_src(tokens)
+        outfilepath = filepath.replace(self.fromdir, self.todir)
+        os.makedirs(os.path.dirname(outfilepath), exist_ok=True)
+        with open(outfilepath, "wb") as f:
+            f.write(result.encode(encoding))
 
-    def _unasync_tokens(self, tokens):
+    def _unasync_tokenize(self, contents, filename):
+        tokens = tokenize_rt.src_to_tokens(contents)
+
+        comment_lines_locations = []
+        for token in tokens:
+            # find line numbers where "unasync: remove" comments are found
+            if (
+                token.name == "COMMENT" and "unasync: remove" in token.src
+            ):  # XXX: maybe make this a little more strict
+                comment_lines_locations.append(token.line)
+
+        lines_to_remove = set()
+        if (
+            comment_lines_locations
+        ):  # only parse ast if we actually have "unasync: remove" comments
+            tree = ast.parse(contents, filename=filename)
+            for node in ast.walk(tree):
+                # find nodes whose line number (start line) intersect with unasync: remove comments
+                if hasattr(node, "lineno") and node.lineno in comment_lines_locations:
+                    for lineno in range(node.lineno, node.end_lineno + 1):
+                        # find all lines related to each node and mark those lines for removal
+                        lines_to_remove.add(lineno)
+
         skip_next = False
-        for i, token in enumerate(tokens):
+        for token in tokens:
+            if token.line in lines_to_remove:
+                continue
             if skip_next:
                 skip_next = False
                 continue
