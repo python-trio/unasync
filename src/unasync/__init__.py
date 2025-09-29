@@ -71,10 +71,13 @@ class Rule:
             tokens = tokenize_rt.src_to_tokens(f.read())
             tokens = self._unasync_tokens(tokens)
             result = tokenize_rt.tokens_to_src(tokens)
-            outfilepath = filepath.replace(self.fromdir, self.todir)
+            outfilepath = self.map_in_to_out_file_path(filepath)
             os.makedirs(os.path.dirname(outfilepath), exist_ok=True)
             with open(outfilepath, "wb") as f:
                 f.write(result.encode(encoding))
+
+    def map_in_to_out_file_path(self, in_file_path):
+        return in_file_path.replace(self.fromdir, self.todir)
 
     def _unasync_tokens(self, tokens):
         skip_next = False
