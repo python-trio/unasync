@@ -1,0 +1,1 @@
+Add public method ``map_in_to_out_file_path`` to ``Rule`` to allow for easier customization via inheritance.
