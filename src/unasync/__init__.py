@@ -89,26 +89,29 @@ class Rule:
                 skip_next = True
             else:
                 if token.name == "NAME":
-                    token = token._replace(src=self._unasync_name(token.src))
+                    token = token._replace(src=self.unasync_name(token.src))
                 elif token.name == "STRING":
-                    left_quote, name, right_quote = (
+                    left_quote, string, right_quote = (
                         token.src[0],
                         token.src[1:-1],
                         token.src[-1],
                     )
                     token = token._replace(
-                        src=left_quote + self._unasync_name(name) + right_quote
+                        src=left_quote + self.unasync_string(string) + right_quote
                     )
 
                 yield token
 
-    def _unasync_name(self, name):
+    def unasync_name(self, name):
         if name in self.token_replacements:
             return self.token_replacements[name]
         # Convert classes prefixed with 'Async' into 'Sync'
         elif len(name) > 5 and name.startswith("Async") and name[5].isupper():
             return "Sync" + name[5:]
         return name
+
+    def unasync_string(self, string):
+        return self.unasync_name(string)
 
 
 def unasync_files(fpath_list, rules):

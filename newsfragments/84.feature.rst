@@ -1,0 +1,1 @@
+Add public methods ``unasync_name`` and ``unasync_string`` to ``Rule`` to allow for easier customization via inheritance.
