@@ -122,7 +122,7 @@ class Rule:
 
         Called after the standard async→sync conversion.
         """
-        return token
+        return tokens
 
     def unasync_name(self, name):
         if name in self.token_replacements:
