@@ -69,7 +69,7 @@ class Rule:
 
         with open(filepath, encoding=encoding) as f:
             tokens = tokenize_rt.src_to_tokens(f.read())
-            tokens = self._unasync_tokens(tokens)
+            tokens = self._transform_tokens(tokens)
             result = tokenize_rt.tokens_to_src(tokens)
             outfilepath = self.map_in_to_out_file_path(filepath)
             os.makedirs(os.path.dirname(outfilepath), exist_ok=True)
@@ -104,6 +104,25 @@ class Rule:
                     )
 
                 yield token
+
+    def _transform_tokens(self, tokens):
+        """
+        Perform all token transformations.
+
+        The default implementation performs the standard async→sync
+        conversion. Subclasses may override this method to perform
+        additional token-level transformations.
+        """
+        tokens = self._unasync_tokens(tokens)
+        return self._postprocess_tokens(tokens)
+
+    def _postprocess_tokens(self, tokens):
+        """
+        Hook for subclasses.
+
+        Called after the standard async→sync conversion.
+        """
+        return tokens
 
     def unasync_name(self, name):
         if name in self.token_replacements:
