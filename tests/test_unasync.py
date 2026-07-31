@@ -17,6 +17,8 @@ TEST_FILES = sorted(f for f in os.listdir(ASYNC_DIR) if f.endswith(".py"))
 def list_files(startpath):
     output = ""
     for root, dirs, files in os.walk(startpath):
+        dirs.sort()
+        files.sort()
         level = root.replace(startpath, "").count(os.sep)
         indent = " " * 4 * (level)
         output += f"{indent}{os.path.basename(root)}/"
